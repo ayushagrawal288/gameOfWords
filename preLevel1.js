@@ -286,7 +286,7 @@ Game.PreLevel1.prototype = {
 		if(tunnel.body.touching.left == true)
 		{
 			soundPowerUp.play();
-			// getGame.state.start('Scene');
+			getGame.state.start('Scene');
 		}
 	},
 

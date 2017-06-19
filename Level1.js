@@ -304,7 +304,7 @@ Game.Level1.prototype = {
 	},
 
 	checkAnswer: function(player,box){
-		if(box.body.touching.bottom == true)
+		if(box.body.touching.down == true)
 		{
 			if(flag==0)
 			{
@@ -414,36 +414,39 @@ Game.Level1.prototype = {
 	},
 
 	handleTween: function(player,sprite){
-		if(flagHandle[sprite.name] == 0)
+		if(sprite.body.touching.up == true)
 		{
-			var tween = getGame.add.tween(sprite).to({
-				y: sprite.y + 15
-			},1000,'Linear',true);
-			flagHandle[sprite.name] = 1;
-			if(flag2==0)
+			if(flagHandle[sprite.name] == 0)
 			{
-				if(sprite.name == getAnswer){
-					score+=50;
-					mineEnemy.destroy();
-					scoreText.text = 'Score: ' + score;
-					questionTextMines.destroy();
-					flag2=1;
-					for(var k=0;k<4;k++)
-					{
-						flagHandle[optionRepresent[k.toString()]] = 1;
+				var tween = getGame.add.tween(sprite).to({
+					y: sprite.y + 15
+				},1000,'Linear',true);
+				flagHandle[sprite.name] = 1;
+				if(flag2==0)
+				{
+					if(sprite.name == getAnswer){
+						score+=50;
+						mineEnemy.destroy();
+						scoreText.text = 'Score: ' + score;
+						questionTextMines.destroy();
+						flag2=1;
+						for(var k=0;k<4;k++)
+						{
+							flagHandle[optionRepresent[k.toString()]] = 1;
+						}
 					}
-				}
-				else{
-					mineEnemy.body.velocity.x = -100;
-					isWrongAnswer = true;
-					score-=20;
-					scoreText.text = 'Score: ' + score;
-				}
-				// handles.destroy();
-				// dynamiteBoxes.destroy();
-				// textGroupMines.destroy();
-				wall.destroy();
-			}		
+					else{
+						mineEnemy.body.velocity.x = -100;
+						isWrongAnswer = true;
+						score-=20;
+						scoreText.text = 'Score: ' + score;
+					}
+					// handles.destroy();
+					// dynamiteBoxes.destroy();
+					// textGroupMines.destroy();
+					wall.destroy();
+				}		
+			}
 		}
 	},
 
