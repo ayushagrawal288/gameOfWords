@@ -1,0 +1,134 @@
+[debug] [2017-06-12T12:26:02.833Z] ----------------------------------------------------------------------
+[debug] [2017-06-12T12:26:02.836Z] Command:      /usr/bin/nodejs /usr/local/bin/firebase serve
+[debug] [2017-06-12T12:26:02.837Z] CLI Version:  3.9.1
+[debug] [2017-06-12T12:26:02.837Z] Platform:     linux
+[debug] [2017-06-12T12:26:02.837Z] Node Version: v4.2.6
+[debug] [2017-06-12T12:26:02.837Z] Time:         Mon Jun 12 2017 12:26:02 GMT+0000 (GMT)
+[debug] [2017-06-12T12:26:02.837Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-06-12T12:26:02.847Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-06-12T12:26:02.847Z] > authorizing via signed-in user
+[debug] [2017-06-12T12:26:02.850Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2017-06-12T12:26:02.850Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/jm8cCdEIn3wtynTjHVYkp2V6RWi6CgyyU7aI3Qu9WKk',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Mon Jun 12 2017 12:26:02 GMT+0000 (GMT)
+[debug] [2017-06-12T12:26:03.413Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:26:03.468Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:26:03 GMT+0000 (GMT)
+[debug] [2017-06-12T12:26:05.611Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:26:05.612Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/game-d3efa/tokens  
+ Mon Jun 12 2017 12:26:05 GMT+0000 (GMT)
+[debug] [2017-06-12T12:26:06.812Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/home/ayush/marioFirebase'...
+[info] 
+[debug] [2017-06-12T12:26:06.820Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:26:06 GMT+0000 (GMT)
+[debug] [2017-06-12T12:26:08.860Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:26:08.861Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1068077880109/clients/_:getWebAppConfig  
+ Mon Jun 12 2017 12:26:08 GMT+0000 (GMT)
+[debug] [2017-06-12T12:26:09.907Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:26:09.955Z] TypeError: Cannot read property 'public' of undefined
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2017-06-12T12:27:17.962Z] ----------------------------------------------------------------------
+[debug] [2017-06-12T12:27:17.965Z] Command:      /usr/bin/nodejs /usr/local/bin/firebase serve
+[debug] [2017-06-12T12:27:17.965Z] CLI Version:  3.9.1
+[debug] [2017-06-12T12:27:17.965Z] Platform:     linux
+[debug] [2017-06-12T12:27:17.965Z] Node Version: v4.2.6
+[debug] [2017-06-12T12:27:17.966Z] Time:         Mon Jun 12 2017 12:27:17 GMT+0000 (GMT)
+[debug] [2017-06-12T12:27:17.966Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-06-12T12:27:17.976Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-06-12T12:27:17.976Z] > authorizing via signed-in user
+[debug] [2017-06-12T12:27:17.979Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:27:17 GMT+0000 (GMT)
+[debug] [2017-06-12T12:27:19.546Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:27:19.547Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/game-d3efa/tokens  
+ Mon Jun 12 2017 12:27:19 GMT+0000 (GMT)
+[debug] [2017-06-12T12:27:20.644Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/home/ayush/marioFirebase'...
+[info] 
+[debug] [2017-06-12T12:27:20.650Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:27:20 GMT+0000 (GMT)
+[debug] [2017-06-12T12:27:22.452Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:27:22.453Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1068077880109/clients/_:getWebAppConfig  
+ Mon Jun 12 2017 12:27:22 GMT+0000 (GMT)
+[debug] [2017-06-12T12:27:28.413Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:27:28.452Z] TypeError: Cannot read property 'public' of undefined
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2017-06-12T12:30:34.095Z] ----------------------------------------------------------------------
+[debug] [2017-06-12T12:30:34.098Z] Command:      /usr/bin/nodejs /usr/local/bin/firebase serve
+[debug] [2017-06-12T12:30:34.098Z] CLI Version:  3.9.1
+[debug] [2017-06-12T12:30:34.099Z] Platform:     linux
+[debug] [2017-06-12T12:30:34.099Z] Node Version: v4.2.6
+[debug] [2017-06-12T12:30:34.099Z] Time:         Mon Jun 12 2017 12:30:34 GMT+0000 (GMT)
+[debug] [2017-06-12T12:30:34.099Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-06-12T12:30:34.109Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-06-12T12:30:34.110Z] > authorizing via signed-in user
+[debug] [2017-06-12T12:30:34.113Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:30:34 GMT+0000 (GMT)
+[debug] [2017-06-12T12:30:36.433Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:30:36.434Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/game-d3efa/tokens  
+ Mon Jun 12 2017 12:30:36 GMT+0000 (GMT)
+[debug] [2017-06-12T12:30:37.762Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/home/ayush/marioFirebase'...
+[info] 
+[debug] [2017-06-12T12:30:37.770Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:30:37 GMT+0000 (GMT)
+[debug] [2017-06-12T12:30:39.561Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:30:39.561Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1068077880109/clients/_:getWebAppConfig  
+ Mon Jun 12 2017 12:30:39 GMT+0000 (GMT)
+[debug] [2017-06-12T12:30:40.395Z] <<< HTTP RESPONSE 200
+[warn] ⚠  hosting: Port 5000 is not available. Trying another port...
+[debug] [2017-06-12T12:30:40.416Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:30:40 GMT+0000 (GMT)
+[debug] [2017-06-12T12:30:42.231Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:30:42.232Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1068077880109/clients/_:getWebAppConfig  
+ Mon Jun 12 2017 12:30:42 GMT+0000 (GMT)
+[debug] [2017-06-12T12:30:43.073Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:30:43.076Z] TypeError: Cannot read property 'public' of undefined
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2017-06-12T12:32:22.986Z] ----------------------------------------------------------------------
+[debug] [2017-06-12T12:32:22.990Z] Command:      /usr/bin/nodejs /usr/local/bin/firebase serve
+[debug] [2017-06-12T12:32:22.990Z] CLI Version:  3.9.1
+[debug] [2017-06-12T12:32:22.990Z] Platform:     linux
+[debug] [2017-06-12T12:32:22.990Z] Node Version: v4.2.6
+[debug] [2017-06-12T12:32:22.991Z] Time:         Mon Jun 12 2017 12:32:22 GMT+0000 (GMT)
+[debug] [2017-06-12T12:32:22.991Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-06-12T12:32:23.001Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-06-12T12:32:23.002Z] > authorizing via signed-in user
+[debug] [2017-06-12T12:32:23.004Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:32:23 GMT+0000 (GMT)
+[debug] [2017-06-12T12:32:29.582Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:32:29.583Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/game-d3efa/tokens  
+ Mon Jun 12 2017 12:32:29 GMT+0000 (GMT)
+[debug] [2017-06-12T12:32:30.778Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/home/ayush/marioFirebase'...
+[info] 
+[debug] [2017-06-12T12:32:30.786Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:32:30 GMT+0000 (GMT)
+[debug] [2017-06-12T12:32:32.765Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:32:32.766Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1068077880109/clients/_:getWebAppConfig  
+ Mon Jun 12 2017 12:32:32 GMT+0000 (GMT)
+[debug] [2017-06-12T12:32:33.925Z] <<< HTTP RESPONSE 200
+[warn] ⚠  hosting: Port 5000 is not available. Trying another port...
+[debug] [2017-06-12T12:32:33.941Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/game-d3efa  
+ Mon Jun 12 2017 12:32:33 GMT+0000 (GMT)
+[debug] [2017-06-12T12:32:35.698Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:32:35.698Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1068077880109/clients/_:getWebAppConfig  
+ Mon Jun 12 2017 12:32:35 GMT+0000 (GMT)
+[debug] [2017-06-12T12:32:36.583Z] <<< HTTP RESPONSE 200
+[debug] [2017-06-12T12:32:36.592Z] TypeError: Cannot read property 'public' of undefined
+[error] 
+[error] Error: An unexpected error has occurred.

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Mario Game(Phaser + Firebase)</title>
+	    <script src="//cdn.jsdelivr.net/phaser/2.6.2/phaser.min.js"></script>
+	    <script src="Boot.js"></script>
+	    <script src="Level1.js"></script>
+	    <script src="preLevel1.js"></script>
+	    <script src="data.js"></script>
+	    <script src="Scene.js"></script>
+	    <script src="modal.js"></script>  
+		
+
+</head>
+<body>
+	<!-- <script type="text/javascript">
+		window.onload = function() {
+			var game = new Phaser.Game(Game.Params.baseWidth,Game.Params.baseHeight,Phaser.CANVAS,'');
+			game.state.add('Boot',Game.Boot);
+			game.state.add('Preloader',Game.Preloader);
+			game.state.add('Level1',Game.Level1);
+			game.state.add('PreLevel1',Game.PreLevel1);
+			game.state.add('Scene',Game.Scene);
+			
+			game.state.start('Boot');
+
+		};
+	</script> -->
+	<script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+	<script>
+		  // Initialize Firebase
+		  var config = {
+		    apiKey: "AIzaSyAx-1VzeKSJcJzuInX5afxvJeZ8WSReWAc",
+		    authDomain: "game-d3efa.firebaseapp.com",
+		    databaseURL: "https://game-d3efa.firebaseio.com",
+		    projectId: "game-d3efa",
+		    storageBucket: "game-d3efa.appspot.com",
+		    messagingSenderId: "1068077880109"
+		  };
+		  firebase.initializeApp(config);
+		</script>
+		<script src="firebaseBasics.js"></script>
+	    <script src="Preloader.js"></script>
+</body>
+</html>

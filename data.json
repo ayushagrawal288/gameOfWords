@@ -1,0 +1,97 @@
+[
+  {
+    "type": "FallingWords",
+    "cloud": "https://firebasestorage.googleapis.com/v0/b/game-d3efa.appspot.com/o/assets%2Fc1.png?alt=media&token=a94579da-38e8-4f8e-a154-e1676cab106f",
+    "cloudKey": "cloud",
+    "cloudX": "175",
+    "cloudY": "50",
+    "componentStartX": "150",
+    "question": "This is a Hill",
+    "questionX": "300",
+    "questionY": "32",
+    "correctCategory": "0",
+    "wordsToFall":[
+                  {
+                        "text": "A",
+                        "category": "0"
+                  },
+                  {
+                        "text": "B",
+                        "category": "1"
+                  },
+                  {
+                        "text": "C",
+                        "category": "0"
+                  },
+                  {
+                        "text": "D",
+                        "category": "1"
+                  },
+                  {
+                        "text": "E",
+                        "category": "0"
+                  },
+                  {
+                        "text": "F",
+                        "category": "1"
+                  },
+                  {
+                        "text": "G",
+                        "category": "0"
+                  },
+                  {
+                        "text": "H",
+                        "category": "1"
+                  },
+                  {
+                        "text": "I",
+                        "category": "0"
+                  }
+            ]
+  },
+  {
+    "type": "Hoarding",
+    "bgImage": "assets/background.png",
+    "bgImageKey": "pic",
+    "bgImageX": "380",
+    "bgImageY": "60",
+    "bgImageWidth": "120",
+    "bgImageHeight": "100",
+    "question": "This is a Hill",
+    "options": "all option",
+    "noOfOptions": "4",
+    "box": "assets/box.png",
+    "boxKey": "box",
+    "answer": "0",
+    "gap": "32"
+  },
+  {
+    "type": "Mines",
+    "bgImage": "assets/background.png",
+    "bgImageKey": "pic",
+    "bgImageX": "750",
+    "bgImageY": "145",
+    "bgImageWidth": "200",
+    "bgImageHeight": "100",
+    "question": "This is a Hill",
+    "options": "all option",
+    "noOfOptions": "4",
+    "handle": "assets/handle.png",
+    "handleKey": "handle",
+    "handleX": "650",
+    "handleY": "196",
+    "gap": "60",
+    "dynamiteBox": "assets/dynamiteBox.png",
+    "dynamiteBoxKey": "dynamiteBox",
+    "mineEnemy": "assets/enemy.png",
+    "mineEnemyKey": "mineEnemy",
+    "mineEnemySpriteWidth": "32",
+    "mineEnemySpriteHeight": "32",
+    "wall": "assets/wall.png",
+    "wallKey": "wall",
+    "wallX": "900",
+    "wallY": "170",
+    "wallGap": "50",
+    "answer": "0"
+  }
+]
