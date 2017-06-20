@@ -23,7 +23,7 @@ var textSprite;
 var style,style1;
 // var score = 0;
 var scoreText;
-var flag = 0;
+var flagBox = 0;
 var flag2 = 0,flag3 = 0;
 var flagPlayer = 3;
 var coins;
@@ -49,13 +49,20 @@ var wall,wall1;
 var explosion;
 var taskCompleted = false;
 var tunnelReverse;
-var index = 0;
-var startCreate = [0,0,0,0,0];
-var flagStart = [0,0,0,0,0];
+var indexCloud = 0;
+var startCloudCreate = {};
+var flagCloudStart = {};
+var indexHoarding = 0;
+var startHoardingCreate = {};
+var flagHoardingStart = {};
+var indexMines = 0;
+var startMinesCreate = {};
+var flagMinesStart = {};
 var groupWords,indexWord;
 var words = [];
 var cloudTween;
 var startX = 1000;
+var completeTime = 0;
 
 Game.Level1.prototype = {
 	create:function(game){
@@ -104,7 +111,12 @@ Game.Level1.prototype = {
 
 		index = 0;
 
-		startCreate[index] = 1;
+		startCloudCreate[indexCloud] = 1;
+		startMinesCreate[indexMines] = 1;
+		startHoardingCreate[indexHoarding] = 1;
+		flagHoardingStart[indexHoarding] = 0;
+		flagCloudStart[indexCloud] = 0;
+		flagMinesStart[indexMines] = 0;
 
 		// enemy1 = this.EnemyBird(0,game,enemy1,Game.Params.baseWidth / 2 -50, Game.Params.baseHeight / 2);	
 
@@ -146,19 +158,48 @@ Game.Level1.prototype = {
 
 		game.camera.focusOnXY(player.x + 100,player.y);			
 
-		if(index < data.length)
+		if(indexCloud < cloudData.length)
 		{
-			if(startCreate[index] == 1 && flagStart[index] == 0)
+			if(startCloudCreate[indexCloud] == 1 && flagCloudStart[indexCloud] == 0)
 			{
-				flagStart[index] = 1;
+				flagCloudStart[indexCloud] = 1;
+				flagCloudStart[indexCloud + 1] = 0;
 				// console.log(index);
-				this.createComponent(game,index);
+				this.componentFallingWords(game,indexCloud);
+				console.log("cloud",indexCloud);
+			}	
+		}
+
+		if(indexHoarding < hoardingData.length)
+		{
+			if(startHoardingCreate[indexHoarding] == 1 && flagHoardingStart[indexHoarding] == 0)
+			{
+				flagHoardingStart[indexHoarding] = 1;
+				flagHoardingStart[indexHoarding + 1] = 0;
+				console.log(indexHoarding,hoardingData,startHoardingCreate,flagHoardingStart);
+				// console.log(index);
+
+				this.componentHoarding(game,indexHoarding);
+				console.log("hoarding",indexHoarding);
+			}	
+		}
+
+		if(indexMines < minesData.length)
+		{
+			if(startMinesCreate[indexMines] == 1 && flagMinesStart[indexMines] == 0)
+			{
+				flagMinesStart[indexMines] = 1;
+				flagMinesStart[indexMines + 1] = 0;
+				// console.log(index);
+				this.componentMines(game,indexMines);
+				console.log("Mines",indexMines);
 			}	
 		}
 
 		if(player.x >= startX && flagPlayer == 0)
 		{
 			flagPlayer = 1;
+			console.log(player.x,flagPlayer);
 			cloudTween.start();
 		}
 
@@ -166,7 +207,10 @@ Game.Level1.prototype = {
 		{
 			cloudTween.stop();
 			flagPlayer = 2;
-			startCreate[getI + 1] = 1;
+		}
+		if(indexWord == words.length && this.time.now > completeTime)
+		{		
+			startCloudCreate[getI + 1] = 1;
 			var componentText = this.addText(game,questionTextWords.x, this.world.centerY,'Task Completed',styleText);
 			soundPowerUp.play();
 			indexWord++;
@@ -174,6 +218,7 @@ Game.Level1.prototype = {
 
 		if(flagPlayer == 1)
 		{
+			// console.log("yo");
 			this.startFallingWords(cloud);
 		}
 
@@ -183,9 +228,9 @@ Game.Level1.prototype = {
 			componentText = this.addText(getGame,Math.floor(sprite.x + sprite.width / 2), Math.floor(sprite.y + sprite.height + 29),'Wrong Answer! Try Again',style1,textGroup);
 		}
 
-		if(flag == 1)
+		if(flagBox == 1)
 		{
-			flag = 0;
+			flagBox = 0;
 			this.hoardingTaskCompleted();
 		}
 
@@ -280,6 +325,7 @@ Game.Level1.prototype = {
 				y: fallText.y + 200
 			},5000,'Linear',true);
 			fallTime = this.time.now + 1500;
+			completeTime = this.time.now + 5000;
 		}
 	},
 
@@ -306,12 +352,12 @@ Game.Level1.prototype = {
 	checkAnswer: function(player,box){
 		if(box.body.touching.down == true)
 		{
-			if(flag==0)
+			if(flagBox==0)
 			{
-				if(box.name == getAnswer){
+				if(box.name == getHoardingAnswer){
 					score+=50;
 					scoreText.text = 'Score: ' + score;
-					flag=1;
+					flagBox=1;
 				}
 				else{
 					isWrongAnswer = true;
@@ -332,19 +378,19 @@ Game.Level1.prototype = {
 		{
 			map.putTileWorldXY(27,sprite.x + 12 + data[getI]["gap"]*j,sprite.y + sprite.height + 8,16,16);
 		}
-		startCreate[getI + 1] = 1;
+		startHoardingCreate[getI + 1] = 1;
 
 	},
 
 	mineTaskCompleted: function(){
 		explosion = getGame.add.sprite(mineEnemy.x - 50,this.world.centerY - 65,'explosion');
 		explosion.animations.add('explode',null,7);
-		explosion.play('explode');
+		explosion.play('explode',7,false,true);
 		// enemyDie.play();
 		flag3 = 1;
 		soundPowerUp.play();
 		componentText = this.addText(getGame,Math.floor(questionbgImage.x), Math.floor(questionbgImage.y + 5),'Correct Answer +50 Points\nTask Completed',styleMines);
-		startCreate[getI + 1] = 1;
+		startMinesCreate[getI + 1] = 1;
 	},
 
 	enableCollisionNotGravity: function(game,sprite){
@@ -384,35 +430,6 @@ Game.Level1.prototype = {
     	scoreText.text = 'Score: ' + score;
 	},
 
-	componentHoarding: function(game,i){
-		sprite = game.add.sprite(parseInt(data[i]["bgImageX"]), parseInt(data[i]["bgImageY"]), data[i]["bgImageKey"]);
-    	sprite.width = data[i]["bgImageWidth"];
-    	sprite.height = data[i]["bgImageHeight"];
-		hoarding = game.add.image(380,100,data[i].hoardingKey);
-		hoarding.width = 100;
-		hoarding.height = 150;
-
-		textGroup = game.add.group();
-		style = { font: "11px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: sprite.width, align: "center"};
-
-    	componentText = this.addText(game, Math.floor(sprite.x + sprite.width / 2), Math.floor(sprite.y + sprite.height / 2 + 5), data[i]["question"] + "\n" + data[i]["options"],style,textGroup);
-	
-	    box = game.add.group();
-	    this.physics.arcade.enableBody(box);
-
-	    for(var j=0;j<data[i]["noOfOptions"];j++)
-	    {
-		    box1 = this.createGroupSprite(game,box,box1,data[i]["boxKey"],sprite.x + 12 + data[i]["gap"]*j,sprite.y + sprite.height + 8,optionRepresent[j.toString()]);
-		    componentText = this.addText(game,sprite.x + 14 + data[i]["gap"]*j,sprite.y + sprite.height + 8 - 12, optionRepresent[j.toString()], style, textGroup);
-		   	box1.body.setSize(8,16.4,0);
-	    }
-
-	    getAnswer = data[i]["answer"];
-	    getI = i;
-
-	    player.bringToTop();
-	},
-
 	handleTween: function(player,sprite){
 		if(sprite.body.touching.up == true)
 		{
@@ -424,7 +441,7 @@ Game.Level1.prototype = {
 				flagHandle[sprite.name] = 1;
 				if(flag2==0)
 				{
-					if(sprite.name == getAnswer){
+					if(sprite.name == getMinesAnswer){
 						score+=50;
 						mineEnemy.destroy();
 						scoreText.text = 'Score: ' + score;
@@ -450,18 +467,50 @@ Game.Level1.prototype = {
 		}
 	},
 
+	componentHoarding: function(game,i){
+		var arr = hoardingData[i];
+		sprite = game.add.sprite(parseInt(arr["bgImageX"]), parseInt(arr["bgImageY"]), arr["bgImageKey"]);
+    	sprite.width = arr["bgImageWidth"];
+    	sprite.height = arr["bgImageHeight"];
+		// hoarding = game.add.image(380,100,arr.hoardingKey);
+		// hoarding.width = 100;
+		// hoarding.height = 150;
+
+		textGroup = game.add.group();
+		style = { font: "11px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: sprite.width, align: "center"};
+
+    	componentText = this.addText(game, Math.floor(sprite.x + sprite.width / 2), Math.floor(sprite.y + sprite.height / 2 + 5), arr["question"] + "\n" + arr["options"],style,textGroup);
+	
+	    box = game.add.group();
+	    this.physics.arcade.enableBody(box);
+
+	    for(var j=0;j<arr["noOfOptions"];j++)
+	    {
+		    box1 = this.createGroupSprite(game,box,box1,arr["boxKey"],sprite.x + 12 + arr["gap"]*j,sprite.y + sprite.height + 8,optionRepresent[j.toString()]);
+		    componentText = this.addText(game,sprite.x + 14 + arr["gap"]*j,sprite.y + sprite.height + 8 - 12, optionRepresent[j.toString()], style, textGroup);
+		   	box1.body.setSize(8,16.4,0);
+	    }
+
+	    getHoardingAnswer = arr["answer"];
+	    getI = i;
+
+	    player.bringToTop();
+
+	    indexHoarding++;
+	},
+
 	componentMines: function(game,i){
-		
-		questionbgImage = game.add.image(parseInt(data[i]["bgImageX"]), parseInt(data[i]["bgImageY"]) - 25,data[i]["bgImageKey"]);
+		var arr = minesData[i];
+		questionbgImage = game.add.image(parseInt(arr["bgImageX"]), parseInt(arr["bgImageY"]) - 25,arr["bgImageKey"]);
 		questionbgImage.anchor.setTo(0.5);
-		questionbgImage.width = data[i]["bgImageWidth"];
-		questionbgImage.height = data[i]["bgImageHeight"];
+		questionbgImage.width = arr["bgImageWidth"];
+		questionbgImage.height = arr["bgImageHeight"];
 		handles = game.add.group();
 	    this.physics.arcade.enableBody(handles);
 
-	    for(var j=0;j<data[i]["noOfOptions"];j++)
+	    for(var j=0;j<arr["noOfOptions"];j++)
 	    {
-		    handle = this.createGroupSprite(game,handles,handle,data[i]["handleKey"],parseInt(data[i]["handleX"]) + parseInt(data[i]["gap"])*j,parseInt(data[i]["handleY"]),optionRepresent[j.toString()]);
+		    handle = this.createGroupSprite(game,handles,handle,arr["handleKey"],parseInt(arr["handleX"]) + parseInt(arr["gap"])*j,parseInt(arr["handleY"]),optionRepresent[j.toString()]);
 		    handle.body.setSize(24,32.4,0);
 		    handle.scale.setTo(0.6);
 	    }
@@ -472,42 +521,45 @@ Game.Level1.prototype = {
 	    textGroupMines = game.add.group();
 		styleMines = { font: "14px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: questionbgImage.width, align: "center"};
 
-    	questionTextMines = this.addText(game, Math.floor(questionbgImage.x), Math.floor(questionbgImage.y + 5), data[i]["question"] + "\n" + data[i]["options"],styleMines);
+    	questionTextMines = this.addText(game, Math.floor(questionbgImage.x), Math.floor(questionbgImage.y + 5), arr["question"] + "\n" + arr["options"],styleMines);
 
-    	for( var j=0;j<data[i]["noOfOptions"];j++)
+    	for( var j=0;j<arr["noOfOptions"];j++)
     	{
-		    dynamiteBox = this.createGroupSprite(game,dynamiteBoxes,dynamiteBox,data[i]["dynamiteBoxKey"],parseInt(data[i]["handleX"]) + parseInt(data[i]["gap"])*j,parseInt(data[i]["handleY"]) + 16,optionRepresent[j.toString()]);
+		    dynamiteBox = this.createGroupSprite(game,dynamiteBoxes,dynamiteBox,arr["dynamiteBoxKey"],parseInt(arr["handleX"]) + parseInt(arr["gap"])*j,parseInt(arr["handleY"]) + 16,optionRepresent[j.toString()]);
 		    textMines = this.addText(game,dynamiteBox.x + 2, dynamiteBox.y + 4 ,optionRepresent[j.toString()],styleMines,textGroupMines);
 		    dynamiteBox.scale.setTo(0.75);
     	}
 
-	    mineEnemy = game.add.sprite(parseInt(data[i]["wallX"]) + 1*parseInt(data[i]["wallGap"]),this.world.centerY,data[i]["mineEnemyKey"]);
+	    mineEnemy = game.add.sprite(parseInt(arr["wallX"]) + 1*parseInt(arr["wallGap"]),this.world.centerY,arr["mineEnemyKey"]);
 	    mineEnemy.anchor.setTo(0.5);
 	    game.physics.arcade.enable(mineEnemy);
-		mineEnemy.animations.add('run',null,7,true);
-		mineEnemy.animations.play('run');
+		// mineEnemy.animations.add('run',[0,1,2],7,true);
+		// mineEnemy.animations.play('run');
 
-		getAnswer = data[i]["answer"];
+		getMinesAnswer = arr["answer"];
 
 		wall = game.add.group();
 		game.physics.arcade.enableBody(wall);
 
-	    wall1 = this.createGroupSprite(game,wall,wall1,data[i]["wallKey"],parseInt(data[i]["wallX"]),parseInt(data[i]["wallY"]));
+	    wall1 = this.createGroupSprite(game,wall,wall1,arr["wallKey"],parseInt(arr["wallX"]),parseInt(arr["wallY"]));
 	    wall1.scale.setTo(0.75,0.85);
-	    wall1 = this.createGroupSprite(game,wall,wall1,data[i]["wallKey"],parseInt(data[i]["wallX"]) + 2*parseInt(data[i]["wallGap"]),parseInt(data[i]["wallY"]));
+	    wall1 = this.createGroupSprite(game,wall,wall1,arr["wallKey"],parseInt(arr["wallX"]) + 2*parseInt(arr["wallGap"]),parseInt(arr["wallY"]));
 	    wall1.scale.setTo(0.75,0.85);
 
 	    getI =i;
 
 	    player.bringToTop();
+
+	    indexMines++;
 	},
 
 	componentFallingWords: function(game,i){
+		var arr = cloudData[i];
 		styleText = { font: "14px Arial", fill: "#ffffff", wordWrap: true, wordWrapWidth: this.game.width - 100, align: "center" };
 
-    	questionTextWords = this.addText(game,parseInt(data[i].questionX),parseInt(data[i].questionY), data[i].question,styleText);
+    	questionTextWords = this.addText(game,parseInt(arr.questionX),parseInt(arr.questionY), arr.question,styleText);
 
-    	cloud = game.add.image(parseInt(data[i].cloudX),parseInt(data[i].cloudY),data[i].cloudKey);
+    	cloud = game.add.image(parseInt(arr.cloudX),parseInt(arr.cloudY),arr.cloudKey);
 
     	cloudTween = game.add.tween(cloud).to({
 			x: cloud.x + 200
@@ -516,20 +568,36 @@ Game.Level1.prototype = {
 		groupWords = game.add.group();
 		this.physics.arcade.enableBody(groupWords);
 
-		words = data[i].wordsToFall;
+		// console.log(wordsToFall);
+
+		correctCategory = arr.correctCategory;
+		words = [];
+
+		var totalWordsToFall = arr.totalWordsToFall;
+		var correctWordsToFall = arr.correctWordsToFall;
+
+		for(var j=0;j<wordsToFall.length;j++)
+		{
+			var arr1 = wordsToFall[j];
+			if(arr1.category == correctCategory)
+			{
+				correctWordsToFall--;
+			}
+			totalWordsToFall--;
+			words.push(arr1);
+		}
 
 		indexWord = 0;
 
 		flagPlayer = 0;
 
-		correctCategory = data[i].correctCategory;
-
-		// wordCategories = data[i].wordsToFallCategories;
-
 		getI = i;
 
-		startX = parseInt(data[i].componentStartX);
+		startX = parseInt(arr.componentStartX);
+		console.log(startX,arr.componentStartX);
 
 		player.bringToTop();
+
+		indexCloud++;
 	}
 }

@@ -1,51 +1,72 @@
-
 var database = firebase.database().ref();
 var storage = firebase.storage().ref();
 
-// var mapImage,flagImage = 0;
-
-// var url = storage.child("assets/game.csv").getDownloadURL().then(function(snapshot){
-// 	mapImage = snapshot;
-// 	// console.log(mapImage,url);
-// 	flagImage++;
-// 	_getEvent();
-// });
-
-// var flagImage = 1;
-
-
-var flag = [];
-var flagData = 0, flagModal = 1, flagButton = 0, flagPreload = 0;
+var flag = 0;
 var data = [];
 database.child("Data").on("value", function(snapshot) {
   	data = snapshot.val();
-	flagData++;
+	flag++;
 	_getEvent()
 });
 
-// var modalData = [];
-// database.child("Modal").on("value", function(snapshot) {
-//   	modalData = snapshot.val();
-//   	flagModal++;
-// 	_getEvent()
-// });
+var coinData = [];
+database.child("Coin").on("value", function(snapshot) {
+  	coinData = snapshot.val();
+	flag++;
+	_getEvent()
+});
+
+var enemyData = [];
+database.child("Enemy").on("value", function(snapshot) {
+  	enemyData = snapshot.val();
+	flag++;
+	_getEvent()
+});
+
+var wordsToFall = [];
+database.child("Words").on("value", function(snapshot) {
+  	wordsToFall = snapshot.val();
+	flag++;
+	_getEvent()
+});
 
 var sceneButtons = [];
 database.child("Scene").on("value", function(snapshot) {
-	flagButton++;
+	flag++;
 	sceneButtons = snapshot.val();
 	_getEvent()
 });
 
 var preloadData = [];
 database.child("PreloadData").on("value", function(snapshot) {
-	flagPreload++;
+	flag++;
 	preloadData = snapshot.val();
 	_getEvent()
 });
 
+var cloudData = [];
+database.child("Cloud").on("value", function(snapshot) {
+	flag++;
+	cloudData = snapshot.val();
+	_getEvent()
+});
+
+var hoardingData = [];
+database.child("Hoarding").on("value", function(snapshot) {
+	flag++;
+	hoardingData = snapshot.val();
+	_getEvent()
+});
+
+var minesData = [];
+database.child("Mines").on("value", function(snapshot) {
+	flag++;
+	minesData = snapshot.val();
+	_getEvent()
+});
+
 function _getEvent() {
-	if(flagData == 1 && flagButton == 1 && flagModal == 1 && flagPreload == 1){
+	if(flag == 9){
 	var game = new Phaser.Game(Game.Params.baseWidth,Game.Params.baseHeight,Phaser.CANVAS,'');
 			game.state.add('Boot',Game.Boot);
 			game.state.add('Preloader',Game.Preloader);

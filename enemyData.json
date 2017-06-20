@@ -1,0 +1,36 @@
+[
+  {
+    "x": "260",
+    "y": "160",
+    "velocity": "-70",
+    "type": "one",
+    "level": "prelevel"
+  },
+  {
+    "x": "600",
+    "y": "160",
+    "velocity": "-70",
+    "type": "one",
+    "level": "prelevel"
+  },
+  {
+    "x": "110",
+    "y": "160",
+    "velocity": "-20",
+    "type": "two",
+    "level": "prelevel"
+  },
+  {
+    "x": "500",
+    "y": "160",
+    "velocity": "-20",
+    "type": "two",
+    "level": "prelevel"
+  },
+  {
+    "x": "200",
+    "y": "120",
+    "type": "bird",
+    "level": "prelevel"
+  }
+]

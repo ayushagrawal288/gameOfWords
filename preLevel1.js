@@ -31,14 +31,19 @@ var soundCoin,soundDie,soundNew;
 var base;
 var levelData;
 var platform;
-var flagEnemy = 0;
-var enemyDieTime;
+var flagEnemy = {};
+// var enemyDieTime = 0;
 var flagDie = false;
+var enemyOne,enemyTwo;
+var enemyOneGroup,enemyTwoGroup;
 
 Game.PreLevel1.prototype = {
 	create:function(game){
-		// console.log(level1.prelevel.width,level1.prelevel.height,this.game.width,level1.prelevel.height/16);
-		levelData = levelDimersion.prelevel; 
+		this.stage.backgroundColor = '#3A0900';
+		getGame=game;
+		this.physics.arcade.gravity.y = 1000;
+
+		levelData = levelDimensions.prelevel; 
 		if(levelData.width % 16 != 0)
 		{
 			levelData.width = (levelData.width / 16 + 1) * 16;
@@ -47,62 +52,80 @@ Game.PreLevel1.prototype = {
 		{
 			levelData.height = (Math.floor(levelData.height / 16) + 1) * 16;
 		}
-		// console.log(level1.prelevel.width,level1.prelevel.height);
 		this.world.setBounds(0,0,levelData.width,levelData.height);
 		
 		ground = game.add.group();
 
-		for(var i =0;i<levelData.width / 16;i++)
+		for(var i =0;i<parseInt(levelData.width) / 16;i++)
 		{
 			base = this.createGroupSprite(game, ground, base, 'block', 8 + 16 * i, 8);
-			base = this.createGroupSprite(game, ground, base, 'block', 8 + 16 * i, 232);
+			base = this.createGroupSprite(game, ground, base, 'block', 8 + 16 * i, parseInt(levelData.height) - 8);
 		}
 		
-		for(var i =0;i<levelData.height / 16;i++)
+		for(var i =0;i<parseInt(levelData.height) / 16;i++)
 		{
 			base = this.createGroupSprite(game, ground, base, 'block', 8, 8 + 16 * i);
-			base = this.createGroupSprite(game, ground, base, 'block',levelData.width - 8, 8 + 16 * i);
+			base = this.createGroupSprite(game, ground, base, 'block',parseInt(levelData.width) - 8, 8 + 16 * i);
 		}
 
 		platforms = game.add.group();
 
 		for (var i=0;i<levelData.platform.length;i++)
 		{
-			if(levelData.platform[i].platformLength % 16 == 0)
+			if(parseInt(levelData.platform[i].platformLength) % 16 == 0)
 			{
-				var l = levelData.platform[i].platformLength / 16;
+				var l = parseInt(levelData.platform[i].platformLength) / 16;
 			}
-			else var l = Math.floor(levelData.platform[i].platformLength / 16) + 1;
+			else var l = Math.floor(parseInt(levelData.platform[i].platformLength / 16)) + 1;
 
 			for(var j=0;j<l;j++)
 			{
-				platform = this.createGroupSprite(game, platforms, platform, 'block',levelData.platform[i].startX + 8 + 16 * j,levelData.platform[i].startY);			
+				platform = this.createGroupSprite(game, platforms, platform, 'block',parseInt(levelData.platform[i].startX) + 8 + 16 * j,parseInt(levelData.platform[i].startY));		
 			}
 		}
 
-		// enemyOne = 
+		enemyOneGroup = game.add.group();
+		this.physics.arcade.enableBody(enemyOneGroup);
 
-		enemyOne = game.add.sprite(460,160,'enemy1');
-		enemyOne.animations.add('run',[0]);
-		enemyOne.animations.add('die',[1]);
-		this.physics.arcade.enable(enemyOne);
-		enemyOne.body.collideWorldBounds = true;
-		enemyOne.alpha = 1;
-		enemyTween = game.add.tween(enemyOne).to({
-				alpha: 0
-		},500,'Linear');
-		enemyTween.onComplete.add(this.enemyTweenDie);
+	    enemyTwoGroup = game.add.group();
+		this.physics.arcade.enableBody(enemyTwoGroup);
 
-		enemyTwo = game.add.sprite(110,160,'enemy2');
-		enemyTwo.animations.add('run');
-		this.physics.arcade.enable(enemyTwo);
-		enemyTwo.body.collideWorldBounds;
+		enemyBirdGroup = game.add.group();
+		this.physics.arcade.enableBody(enemyBirdGroup);
 
+	    for(var i=0;i<enemyData.length;i++)
+	    {
+	    	var arr = enemyData[i];
+	    	if(arr.type == "bird")
+	    	{
+				enemy1 = this.EnemyBird(game,enemyBirdGroup,enemy1,'bird',parseInt(arr.x), parseInt(arr.y),i.toString());
+	    	}
+	    	else{
+	    		if(arr.type == "one")
+	    		{
+	    			var enemy = enemyOneGroup.create(parseInt(arr.x),parseInt(arr.y),'enemy1');
+	    		}
+	    		else{
+	    			var enemy = enemyTwoGroup.create(parseInt(arr.x),parseInt(arr.y),'enemy2');
+	    		}
+	    		this.physics.arcade.enable(enemy);
+				enemy.body.collideWorldBounds = true;
+				enemy.name = i.toString();
+				flagEnemy[i.toString()] = 0;
+				// if(arr.directionOfMovement == "left" || arr.directionOfMovement == "Left" || arr.directionOfMovement == "LEFT")
+				// {
+				// 	enemy.body.velocity.x = -20;
+				// }
+				enemy.body.velocity.x = parseInt(arr.velocity);
+	    	}
+	    }
 
-
-		this.stage.backgroundColor = '#3A0900';
-		getGame=game;
-		this.physics.arcade.gravity.y = 1000;
+	    enemyOneGroup.callAll('animations.add', 'animations', 'run', [0,1],5,true);
+	    enemyOneGroup.callAll('animations.add', 'animations', 'die', [2]);
+	    enemyOneGroup.callAll('play', null, 'run');
+	    
+	    enemyTwoGroup.callAll('animations.add', 'animations', 'run', [0,1],2,true);
+	    enemyTwoGroup.callAll('play', null, 'run');
 
 		soundJump = game.add.sound('jump');
 		soundPowerUp = game.add.sound('powerup');
@@ -136,12 +159,10 @@ Game.PreLevel1.prototype = {
 
 	    for(i=0;i<coinData.preLevel.length;i++)
 	    {
-		    coin = this.createGroupSprite(game,coins,coin,coinData.key,coinData.preLevel[i].x,coinData.preLevel[i].y);	
+		    coin = this.createGroupSprite(game,coins,coin,coinData.key,parseInt(coinData.preLevel[i].x),parseInt(coinData.preLevel[i].y));	
 	    }
 
 		controls = this.input.keyboard.createCursorKeys();
-
-		enemy1 = this.EnemyBird(0,game,enemy1,Game.Params.baseWidth / 2 -50, Game.Params.baseHeight / 2);	
 
 		nuts = game.add.group();
 		nuts.enableBody = true;
@@ -156,13 +177,12 @@ Game.PreLevel1.prototype = {
 
 		nuts.setAll('outofBoundsKill',true);
 		nuts.setAll('checkWorldBounds',true);
-		console.log(this.time.now);
 
 		scoreText = game.add.text(24, 24, 'score: 0', { fontSize: '32px', fill: '#000' });
 		scoreText.fixedToCamera = true;
 
 		tunnel = game.add.sprite(560,192,'tunnel');
-		this.enableCollisionNGravity(game,tunnel);
+		this.enableCollisionNotGravity(game,tunnel);
 		tunnel.body.setSize(80,5,0,3);
 
 		soundNew.play();
@@ -172,29 +192,18 @@ Game.PreLevel1.prototype = {
 		this.physics.arcade.collide(player,ground);
 		this.physics.arcade.collide(player,platforms);
 		this.physics.arcade.collide(player,box,this.checkAnswer);
-		this.physics.arcade.collide(player,enemy1,this.resetPlayer);
+		this.physics.arcade.collide(player,enemyBirdGroup,this.resetPlayer);
 		this.physics.arcade.overlap(player,coins,this.getCoin);
-		this.physics.arcade.overlap(enemy1,nuts,this.killEnemy);
+		this.physics.arcade.overlap(enemyBirdGroup,nuts,this.killEnemy);
 		this.physics.arcade.collide(player,tunnel,this.enterTunnel);
-		this.physics.arcade.collide(player,enemyOne,this.collideEnemyOne);
-		this.physics.arcade.collide(enemyOne,ground);
-		this.physics.arcade.collide(enemyOne,platforms);
-		this.physics.arcade.collide(enemyTwo,ground);
-		this.physics.arcade.collide(enemyTwo,platforms);
-		this.physics.arcade.collide(player,enemyTwo,this.resetPlayer);
+		this.physics.arcade.collide(player,enemyOneGroup,this.collideEnemyOne);
+		this.physics.arcade.collide(enemyOneGroup,ground);
+		this.physics.arcade.collide(enemyOneGroup,platforms);
+		this.physics.arcade.collide(enemyTwoGroup,ground);
+		this.physics.arcade.collide(enemyTwoGroup,platforms);
+		this.physics.arcade.collide(player,enemyTwoGroup,this.resetPlayer);
 		player.body.velocity.x = 0;
-		if(flagEnemy == 0)
-		{
-			enemyOne.animations.play('run');
-			enemyOne.body.velocity.x = -70;
-			// enemyDieTime = this.time.now;
-		}
 
-		enemyTwo.body.velocity.x = 20;
-		// if(enemyDieTime < this.time.now && flagEnemy == 1)
-		// {
-		// 	enemyOne.destroy();
-		// }
 		if(flagDie == true)
 		{
 			this.resetPlayer();
@@ -235,51 +244,39 @@ Game.PreLevel1.prototype = {
     	}
 	},
 
+	EnemyBird: function(game,group,sprite,key,x,y,name){
+	    sprite = this.createGroupSprite(game,group,sprite,key,x,y,name);
+		birdTween = game.add.tween(sprite).to({
+			y: sprite.y + 25
+		},2000,'Linear',true,0,50,true);
+		return sprite;
+	},
+
 	resetPlayer: function(){
 		flagDie = false;
 		soundDie.play();
 		player.reset(100,180);
 	},
 
-	getCoin: function(player,coin){
-		coin.kill();
-		soundCoin.play();
-		score += 10;
-    	scoreText.text = 'Score: ' + score;
-	},
-
 	collideEnemyOne: function(player,enemy){
 		if(enemy.body.touching.up == true)
 		{
-			if(flagEnemy == 0)
+			if(flagEnemy[enemy.name] == 0)
 			{
-				flagEnemy = 1;
-				enemyDieTime += 500;
-				enemy.animations.play('die');
+				flagEnemy[enemy.name] = 1;
+				enemy.animations.play('die',1,false,true);
 				enemy.body.velocity.x = 0;
-				enemyTween.start();
 			}
-			// enemyTween = getGame.add.tween(enemy).to({
-			// 	alpha: 0
-			// },500,'Linear');
-			// enemyTween.onComplete.add(this.enemyTweenDie);
 		}
 		else{ 
 			flagDie = true;
 			enemy.destroy();
-			flagEnemy = 1;
 		}
 	},
 
 	enemyTweenDie: function(enemy,enemyTween){
+		console.log(enemy,enemyTween);	
 		enemy.destroy();
-	},
-
-	checkOverlap: function(spriteA,spriteB){
-		var BoundsA = spriteA.getBounds();
-		var BoundsB = spriteB.getBounds();
-
-		return Phaser.Rectangle.intersects(BoundsA,BoundsB);
 	},
 
 	enterTunnel: function(player,tunnel){
@@ -290,8 +287,35 @@ Game.PreLevel1.prototype = {
 		}
 	},
 
+
+
+
+
+
+
+
+
+
+
+
+	getCoin: function(player,coin){
+		coin.kill();
+		soundCoin.play();
+		score += 10;
+    	scoreText.text = 'Score: ' + score;
+	},
+
+
+
+	checkOverlap: function(spriteA,spriteB){
+		var BoundsA = spriteA.getBounds();
+		var BoundsB = spriteB.getBounds();
+
+		return Phaser.Rectangle.intersects(BoundsA,BoundsB);
+	},
+
+
 	shootNut: function(){
-		console.log(this.time.now);
 		if(this.time.now > shootTime){
 			nut = nuts.getFirstExists(false);
 			if(nut){
@@ -335,36 +359,22 @@ Game.PreLevel1.prototype = {
 		// map.setCollision([1,2,27,57,895]);
 	},
 
-	enableCollisionNGravity: function(game,sprite){
+	enableCollisionNotGravity: function(game,sprite){
 		game.physics.arcade.enable(sprite);
 		sprite.body.immovable = true;
 		sprite.body.collideWorldBounds = true;
 		sprite.body.allowGravity = false;
+		return sprite;
 	},
 
-	createGroupSprite: function(game,group,sprite,key,x,y,name,isText,text){
+	createGroupSprite: function(game,group,sprite,key,x,y,name){
 		sprite = group.create(x,y,key);
 	    sprite.anchor.setTo(0.5);
-	    this.enableCollisionNGravity(game,sprite);
+	    sprite = this.enableCollisionNotGravity(game,sprite);
 		if(name!=null)
 		{
 			sprite.name = name;
 		}
-		if(isText == true)
-		{
-			textSprite = this.addText(game,x+2,y-12,text,style);
-		}
-		return sprite,textSprite;
-	},
-
-	EnemyBird: function(index,game,sprite,x,y){
-		sprite = game.add.sprite(x,y,'bird');
-	    sprite.anchor.setTo(0.5);
-	    sprite.name = index.toString();
-		this.enableCollisionNGravity(game,sprite);
-		birdTween = game.add.tween(sprite).to({
-			y: sprite.y + 25
-		},2000,'Linear',true,0,50,true);
 		return sprite;
 	},
 

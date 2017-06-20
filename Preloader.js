@@ -28,7 +28,7 @@ Game.Preloader.prototype = {
 		this.load.image('next',preloadData.next);
 		this.load.image('tunnel',preloadData.tunnel);
 		this.load.image('tunnelReverse',preloadData.tunnelReverse);
-		this.load.spritesheet('enemy1',"assets/enemy1.png",16,16);
+		this.load.spritesheet('enemy1',"assets/enemyOne.png",16,16);
 		this.load.spritesheet('enemy2',"assets/enemy2.png",16,16);
 
 		for (var i=0;i<data.length;i++)
