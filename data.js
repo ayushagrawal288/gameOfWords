@@ -1,30 +1,31 @@
-var levelDimensions = {
-      prelevel: {
-            height: "230",
-            width: "800",
-            platform: [
-                  {
-                        startX: "100",
-                        startY: "180",
-                        platformLength: "50"
-                  },
-                  {
-                        startX: "400",
-                        startY: "180",
-                        platformLength: "70"
-                  }
-            ]
-      },
-      scene: {
-            height: "240",
-            width: "800"
-      },
-      level: {
-            height: "240",
-            width: "800"
-      }
+// var levelDimensions = {
+//       prelevel: {
+//             height: "230",
+//             width: "800",
+//             platform: [
+//                   {
+//                         startX: "100",
+//                         startY: "180",
+//                         platformLength: "50"
+//                   },
+//                   {
+//                         startX: "400",
+//                         startY: "180",
+//                         platformLength: "70"
+//                   }
+//             ]
+//       },
+//       scene: {
+//             height: "425",
+//             width: "600"
+//       },
+//       level: {
+//             height: "240",
+//             width: "2000",
+//             platform: []
+//       }
 
-}
+// }
 
 // var coinData = {
 //       key: "coin",
@@ -67,46 +68,70 @@ var levelDimensions = {
 //       ]
 // };
 
-// var enemyData = [
-//       {
-//             x: "260",
-//             y: "160",
-//             // directionOfMovement: "left",
-//             velocity : "-70",
-//             type: "one",
-//             level: "prelevel"
-//       },
-//       {
-//             x: "600",
-//             y: "160",
-//             // directionOfMovement: "left",
-//             velocity : "-70",
-//             type: "one",
-//             level: "prelevel"
-//       },
-//       {
-//             x: "110",
-//             y: "160",
-//             // directionOfMovement: "right",
-//             velocity : "-20",
-//             type: "two",
-//             level: "prelevel"
-//       },
-//       {
-//             x: "500",
-//             y: "160",
-//             // directionOfMovement: "left",
-//             velocity : "-20",
-//             type: "two",
-//             level: "prelevel"
-//       },
-//       {
-//             x: "200",
-//             y: "120",
-//             type: "bird",
-//             level: "prelevel"
-//       }
-// ]
+// var enemyData = {
+//       prelevel: [
+//             {
+//                   x: "260",
+//                   y: "160",
+//                   velocity : "-70",
+//                   type: "one",
+//             },
+//             {
+//                   x: "600",
+//                   y: "160",
+//                   velocity : "-70",
+//                   type: "one",
+//             },
+//             {
+//                   x: "110",
+//                   y: "160",
+//                   velocity : "-20",
+//                   type: "two",
+//             },
+//             {
+//                   x: "500",
+//                   y: "160",
+//                   velocity : "-20",
+//                   type: "two",
+//             },
+//             {
+//                   x: "200",
+//                   y: "120",
+//                   type: "bird",
+//             }
+//       ],
+//       level: [
+//             {
+//                   x: "260",
+//                   y: "160",
+//                   velocity : "-70",
+//                   type: "one",
+//             },
+//             {
+//                   x: "600",
+//                   y: "160",
+//                   velocity : "-70",
+//                   type: "one",
+//             },
+//             {
+//                   x: "110",
+//                   y: "160",
+//                   velocity : "-20",
+//                   type: "two",
+//             },
+//             {
+//                   x: "500",
+//                   y: "160",
+//                   velocity : "-20",
+//                   type: "two",
+//             },
+//             {
+//                   x: "200",
+//                   y: "120",
+//                   type: "bird",
+//             }
+//       ]
+// }
 
 // var category = [
 //       {

@@ -6,7 +6,7 @@ var reg = {};
 
 Game.Scene.prototype = {
 	create: function(game){
-		game.scale.setGameSize(600, 425);
+		game.scale.setGameSize(levelDimensions.scene.width, levelDimensions.scene.height);
 		sceneImage = this.add.image(this.game.width / 2, this.game.height / 2, 'background');
 		sceneImage.anchor.set(0.5);
 		sceneImage.width = this.game.width;

@@ -1,0 +1,33 @@
+{
+  "prelevel": {
+    "height": "230",
+    "width": "800",
+    "platform": [
+      {
+        "startX": "100",
+        "startY": "180",
+        "platformLength": "50"
+      },
+      {
+        "startX": "400",
+        "startY": "180",
+        "platformLength": "70"
+      }
+    ]
+  },
+  "scene": {
+    "height": "425",
+    "width": "600"
+  },
+  "level": {
+    "height": "240",
+    "width": "2000",
+    "platform": [
+      {
+        "startX": "100",
+        "startY": "180",
+        "platformLength": "50"
+      }
+    ]
+  }
+}

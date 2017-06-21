@@ -9,6 +9,14 @@ database.child("Data").on("value", function(snapshot) {
 	_getEvent()
 });
 
+var levelDimensions = [];
+database.child("Config").on("value", function(snapshot) {
+  	levelDimensions = snapshot.val();
+	flag++;
+	_getEvent()
+});
+
+
 var coinData = [];
 database.child("Coin").on("value", function(snapshot) {
   	coinData = snapshot.val();

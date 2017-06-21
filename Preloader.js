@@ -31,26 +31,29 @@ Game.Preloader.prototype = {
 		this.load.spritesheet('enemy1',"assets/enemyOne.png",16,16);
 		this.load.spritesheet('enemy2',"assets/enemy2.png",16,16);
 
-		for (var i=0;i<data.length;i++)
+		for (var i=0;i<hoardingData.length;i++)
 		{
-			if(data[i]["type"]=="Hoarding")
-			{
-				this.load.image(data[i]["bgImageKey"], data[i]["bgImage"]);
-				this.load.image(data[i]["hoardingKey"], data[i]["hoardingImage"]);
-				this.load.image(data[i]["boxKey"], data[i]["box"]);
-			}
-			else if(data[i]["type"]=="Mines")
-			{
-				this.load.image(data[i]["bgImageKey"], data[i]["bgImage"]);
-				this.load.image(data[i]["dynamiteBoxKey"],data[i]["dynamiteBox"]);
-				this.load.image(data[i]["handleKey"],data[i]["handle"]);
-				this.load.spritesheet(data[i]["mineEnemyKey"],data[i]["mineEnemy"],parseInt(data[i]["mineEnemySpriteWidth"]),parseInt(data[i]["mineEnemySpriteHeight"]));
-				this.load.image(data[i]["wallKey"],data[i]["wall"]);
-			}
-			else if(data[i].type == 'FallingWords')
-			{
-				this.load.image(data[i].cloudKey,data[i].cloud);
-			}
+			var arr2 = hoardingData[i];
+			this.load.image(arr2["bgImageKey"], arr2["bgImage"]);
+			this.load.image(arr2["hoardingKey"], arr2["hoardingImage"]);
+			this.load.spritesheet(arr2["boxKey"], arr2["box"],parseInt(arr2["boxSpriteWidth"]),parseInt(arr2["boxSpriteHeight"]));
+		}
+
+		for(var i=0;i<minesData.length;i++)
+		{
+			var arr2 = minesData[i];
+			this.load.image(arr2["bgImageKey"], arr2["bgImage"]);
+			this.load.image(arr2["dynamiteBoxKey"],arr2["dynamiteBox"]);
+			this.load.image(arr2["handleKey"],arr2["handle"]);
+			this.load.spritesheet(arr2["mineEnemyKey"],arr2["mineEnemy"],parseInt(arr2["mineEnemySpriteWidth"]),parseInt(arr2["mineEnemySpriteHeight"]));
+			this.load.image(arr2["wallKey"],arr2["wall"]);
+		}
+
+		for(var i=0;i<cloudData.length;i++)
+		{
+
+			var arr2 = cloudData[i];
+			this.load.image(arr2.cloudKey,arr2.cloud);
 		}
 
 		this.load.image('background',preloadData.sceneBackground);
