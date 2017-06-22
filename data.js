@@ -2,18 +2,53 @@
 //       prelevel: {
 //             height: "230",
 //             width: "800",
-//             platform: [
-//                   {
-//                         startX: "100",
-//                         startY: "180",
-//                         platformLength: "50"
-//                   },
-//                   {
-//                         startX: "400",
-//                         startY: "180",
-//                         platformLength: "70"
-//                   }
-//             ]
+            // platform: [
+            //       {
+            //             startX: "100",
+            //             startY: "180",
+            //             platformLength: "50"
+            //       },
+            //       {
+            //             startX: "400",
+            //             startY: "180",
+            //             platformLength: "70"
+            //       },
+            //       {
+            //             startX: "170",
+            //             startY: "150",
+            //             platformLength: "70"
+            //       },
+            //       {
+            //             startX: "170",
+            //             startY: "134",
+            //             platformLength: "16"
+            //       },
+            //       {
+            //             startX: "224",
+            //             startY: "134",
+            //             platformLength: "16"
+            //       },
+            //       {
+            //             startX: "500",
+            //             startY: "180",
+            //             platformLength: "70"
+            //       },
+            //       {
+            //             startX: "590",
+            //             startY: "150",
+            //             platformLength: "70"
+            //       },
+            //       {
+            //             startX: "680",
+            //             startY: "120",
+            //             platformLength: "70"
+            //       },
+            //       {
+            //             startX: "750",
+            //             startY: "100",
+            //             platformLength: "50"
+            //       }
+            // ]
 //       },
 //       scene: {
 //             height: "425",
@@ -98,12 +133,18 @@
 //                   x: "200",
 //                   y: "120",
 //                   type: "bird",
-//             }
-//       ],
-//       level: [
+// //             }
+// //       ],
+//       level2: [
 //             {
 //                   x: "260",
 //                   y: "160",
+//                   velocity : "-70",
+//                   type: "one",
+//             },
+//             {
+//                   x: "216",
+//                   y: "134",
 //                   velocity : "-70",
 //                   type: "one",
 //             },
@@ -116,6 +157,12 @@
 //             {
 //                   x: "110",
 //                   y: "160",
+//                   velocity : "-20",
+//                   type: "two",
+//             },
+//             {
+//                   x: "780",
+//                   y: "70",
 //                   velocity : "-20",
 //                   type: "two",
 //             },

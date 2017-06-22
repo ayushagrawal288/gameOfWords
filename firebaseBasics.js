@@ -52,10 +52,19 @@ database.child("PreloadData").on("value", function(snapshot) {
 	_getEvent()
 });
 
-var cloudData = [];
+var cloudData = [],cloud = [];
 database.child("Cloud").on("value", function(snapshot) {
 	flag++;
 	cloudData = snapshot.val();
+	// cloud.forEach(element){
+	// 	cloudData.push(element);
+	// 	// console.log(snap,cloudData);
+	// }
+	// console.log(JSON.parse(cloud));
+	// cloud.forEach(function(entry) {
+	// 	cloudData.push(entry);
+ //    	console.log(entry);
+	// });
 	_getEvent()
 });
 
@@ -79,6 +88,7 @@ function _getEvent() {
 			game.state.add('Boot',Game.Boot);
 			game.state.add('Preloader',Game.Preloader);
 			game.state.add('Level1',Game.Level1);
+			game.state.add('Level2',Game.Level2);
 			game.state.add('PreLevel1',Game.PreLevel1);
 			game.state.add('Scene',Game.Scene);
 			

@@ -7,6 +7,7 @@ var reg = {};
 Game.Scene.prototype = {
 	create: function(game){
 		game.scale.setGameSize(levelDimensions.scene.width, levelDimensions.scene.height);
+		this.world.setBounds(0,0,levelDimensions.scene.width, levelDimensions.scene.height)
 		sceneImage = this.add.image(this.game.width / 2, this.game.height / 2, 'background');
 		sceneImage.anchor.set(0.5);
 		sceneImage.width = this.game.width;
@@ -34,13 +35,7 @@ Game.Scene.prototype = {
 		});
 		image.width = image.height = 32;
 
-		player = this.add.sprite(80,210,'player');
-		player.anchor.setTo(0.5,0.5);
-		player.animations.add('idle',[0,1],1,true);
-		player.animations.add('jump',[2],1,true);
-		player.animations.add('run',[3,4,5,6,7,8],7,true);
-		this.physics.arcade.enable(player);
-		player.body.collideWorldBounds = true;
+		createPlayer(80,210);
 
 		controls = this.input.keyboard.createCursorKeys();
 
