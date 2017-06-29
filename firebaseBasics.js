@@ -33,7 +33,11 @@ database.child("Enemy").on("value", function(snapshot) {
 
 var wordsToFall = [];
 database.child("Words").on("value", function(snapshot) {
-  	wordsToFall = snapshot.val();
+  	// wordsToFall = snapshot.val();
+  	for(var k in snapshot.val())
+	{
+		wordsToFall.push(snapshot.val()[k]);
+	}
 	flag++;
 	_getEvent()
 });
@@ -55,30 +59,30 @@ database.child("PreloadData").on("value", function(snapshot) {
 var cloudData = [],cloud = [];
 database.child("Cloud").on("value", function(snapshot) {
 	flag++;
-	cloudData = snapshot.val();
-	// cloud.forEach(element){
-	// 	cloudData.push(element);
-	// 	// console.log(snap,cloudData);
-	// }
-	// console.log(JSON.parse(cloud));
-	// cloud.forEach(function(entry) {
-	// 	cloudData.push(entry);
- //    	console.log(entry);
-	// });
+	for(var k in snapshot.val())
+	{
+		cloudData.push(snapshot.val()[k]);
+	}
 	_getEvent()
 });
 
 var hoardingData = [];
 database.child("Hoarding").on("value", function(snapshot) {
 	flag++;
-	hoardingData = snapshot.val();
+	for(var k in snapshot.val())
+	{
+		hoardingData.push(snapshot.val()[k]);
+	}
 	_getEvent()
 });
 
 var minesData = [];
 database.child("Mines").on("value", function(snapshot) {
 	flag++;
-	minesData = snapshot.val();
+	for(var k in snapshot.val())
+	{
+		minesData.push(snapshot.val()[k]);
+	}
 	_getEvent()
 });
 
@@ -91,6 +95,7 @@ function _getEvent() {
 			game.state.add('Level2',Game.Level2);
 			game.state.add('PreLevel1',Game.PreLevel1);
 			game.state.add('Scene',Game.Scene);
+			game.state.add('Scene2',Game.Scene2);
 			
 			game.state.start('Boot');
 		}

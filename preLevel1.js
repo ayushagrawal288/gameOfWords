@@ -8,6 +8,7 @@ var map;
 var layer;
 var graphics;
 var graphicsSprite;
+var graphicsGroup;
 var player;
 var box1,box2;
 var box;
@@ -46,8 +47,16 @@ var flagHoardingStart = {};
 var indexMines = 0;
 var startMinesCreate = {};
 var flagMinesStart = {};
-// var flagEnemyDirection = {};
+var flagEnemyDirection = {};
+var changeTime = {};
 var currentLevel;
+var power;
+var direction = 'right';
+var playerDie = false;
+var playerDieTime = 0;
+var flagPlayerTime = false;
+var dragon;
+var playerCollideDragon;
 
 Game.PreLevel1.prototype = {
 	create:function(game){
@@ -58,6 +67,21 @@ Game.PreLevel1.prototype = {
 
 		currentLevel = 'prelevel';
 
+		// graphicsGroup = game.add.group();
+		// this.physics.arcade.enableBody(graphicsGroup);
+
+		// graphics = game.add.graphics(0,0);
+		// // console.log(graphics);
+		// graphics.beginFill(0xff0000);
+		// graphics.drawRect(200,150,150,50);
+		// graphics.endFill();
+		// // console.log(graphics.body);
+		// graphicsSprite = game.add.sprite(0,0);
+		// graphicsSprite.addChild(graphics);
+		// graphicsSprite = enableCollisionNotGravity(game,graphicsSprite);
+		// graphics.body.allowGravity = false;
+		// console.log(graphics.body);
+
 		levelData = levelDimensions.prelevel; 
 		createLevelStructure(game,levelData);
 		createEnemy(game,'prelevel');
@@ -65,13 +89,6 @@ Game.PreLevel1.prototype = {
 		createCoin(game,'preLevel');
 		initialiseComponentVariables();		
 		createNuts(game);
-
-		soundJump = game.add.sound('jump');
-		soundPowerUp = game.add.sound('powerup');
-		soundCoin = game.add.sound('soundCoin');
-		soundDie = game.add.sound('soundDie');
-		soundNew = game.add.sound('soundNew');
-		enemyDie = game.add.sound('enemyDie');
 
 		style1 = { font: "6px", fill: "#ffffff", align: "center"};
 
@@ -83,6 +100,7 @@ Game.PreLevel1.prototype = {
 		tunnel = game.add.sprite(levelData.width - 30,192,'tunnel');
 		enableCollisionNotGravity(game,tunnel);
 		tunnel.body.setSize(80,5,0,3);
+		tunnel.next = 'Scene';
 
 		soundNew.play();
 	},
@@ -91,6 +109,8 @@ Game.PreLevel1.prototype = {
 		updateEnemyPhysics();
 		updatePlayerPhysics();
 		this.physics.arcade.collide(player,tunnel,enterTunnel);
+		// this.physics.arcade.collide(player,graphicsSprite);
+		// this.physics.arcade.collide(player,graphics);
 		
 		player.body.velocity.x = 0;
 

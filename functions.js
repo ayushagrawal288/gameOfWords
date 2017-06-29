@@ -36,6 +36,7 @@ function createLevelStructure(game,levelData){
 			for(var j=0;j<l;j++)
 			{
 				platform = createGroupSprite(game, platforms, platform, 'block',parseInt(levelData.platform[i].startX) + 8 + 16 * j,parseInt(levelData.platform[i].startY));		
+				platform.body.setSize(8,16.4,0);
 			}
 		}
 };
@@ -50,7 +51,11 @@ function createEnemy(game,level){
 		enemyBirdGroup = game.add.group();
 		thisLevel.physics.arcade.enableBody(enemyBirdGroup);
 
-		// flagEnemyDirection = {};
+		flagEnemyDirection = {};
+		changeTime = {};
+
+		dragon = game.add.group();
+		thisLevel.physics.arcade.enableBody(dragon);
 
 	    for(var i=0;i<enemyData[level].length;i++)
 	    {
@@ -73,8 +78,8 @@ function createEnemy(game,level){
 				flagEnemy[i.toString()] = 0;
 				enemy.body.velocity.x = parseInt(arr.velocity);
 	    	}
-	    	// flagEnemyDirection[i.toString()] = 0;
-	    	console.log(level);
+	    	flagEnemyDirection[i.toString()] = 0;
+	    	changeTime[i.toString()] = 0;
 	    }
 
 	    enemyOneGroup.callAll('animations.add', 'animations', 'run', [0,1],5,true);
@@ -91,8 +96,7 @@ function createCoin(game,level){
 
 	    for(i=0;i<coinData[level].length;i++)
 	    {
-	    	console.log(level);
-		    coin = createGroupSprite(game,coins,coin,coinData.key,parseInt(coinData[level][i].x),parseInt(coinData[level][i].y));	
+		    coin = createGroupSprite(game,coins,coin,'coin',parseInt(coinData[level][i].x),parseInt(coinData[level][i].y));	
 	    }
 };
 
@@ -104,6 +108,20 @@ function createPlayer(x,y){
 		player.animations.add('run',[3,4,5,6,7,8],7,true);
 		thisLevel.physics.arcade.enable(player);
 		player.body.collideWorldBounds = true;
+		playerDie = false;
+		player.health = 100;
+		playerCollideDragon = false;
+		playerX = 0;
+	createSounds(getGame);
+}
+
+function createSounds(game){
+	soundJump = game.add.sound('jump');
+	soundPowerUp = game.add.sound('powerup');
+	soundCoin = game.add.sound('soundCoin');
+	soundDie = game.add.sound('soundDie');
+	soundNew = game.add.sound('soundNew');
+	enemyDie = game.add.sound('enemyDie');
 }
 
 function initialiseComponentVariables(){
@@ -128,7 +146,9 @@ function createNuts(game){
 	nuts = game.add.group();
 		nuts.enableBody = true;
 		nuts.physicsBodyType = Phaser.Physics.ARCADE;
-		nuts.createMultiple(5,'nut');
+		nuts.createMultiple(5,'power');
+
+		nuts.callAll('animations.add', 'animations', 'fire', null,4,true);
 
 		nuts.setAll('anchor.x',0.5);
 		nuts.setAll('anchor.y',0.5);
@@ -138,6 +158,7 @@ function createNuts(game){
 
 		nuts.setAll('outofBoundsKill',true);
 		nuts.setAll('checkWorldBounds',true);
+		// nuts.setAll('allowGravity',false);
 }
 
 function updatePlayer(){
@@ -151,17 +172,25 @@ function updatePlayer(){
 			player.animations.play('run');
 			player.scale.setTo(1,1);
 			player.body.velocity.x += playerSpeed;
+			direction = "right";
 		}
 		else if(controls.left.isDown){
 			player.animations.play('run');
 			player.scale.setTo(-1,1);
 			player.body.velocity.x -= playerSpeed;
+			direction = "left";
 		}
 		else if(controls.down.isDown){
     		shootNut();
     	}
 		else {
         	player.animations.play('idle');
+    	}
+
+    	if(playerCollideDragon == true && (playerX-20) >= (player.x))
+    	{
+    		playerCollideDragon = false;
+    		console.log(playerX,player.x);
     	}
 }
 
@@ -190,7 +219,6 @@ function createComponent(game,level){
 			{
 				flagHoardingStart[indexHoarding] = 1;
 				flagHoardingStart[indexHoarding + 1] = 0;
-				// console.log(indexHoarding,hoardingData,startHoardingCreate,flagHoardingStart);
 				console.log("hoarding",indexHoarding);
 				if(hoardingData[indexHoarding].level == level)
 				{
@@ -227,9 +255,10 @@ function maintainComponents(game){
 		thisLevel.physics.arcade.collide(player,handles,handleTween);
 		thisLevel.physics.arcade.collide(mineEnemy,ground);
 		thisLevel.physics.arcade.collide(player,wall);
-		thisLevel.physics.arcade.collide(player,mineEnemy,reset);
+		thisLevel.physics.arcade.collide(player,mineEnemy,resetPlayer);
 		thisLevel.physics.arcade.overlap(player,groupWords,collectWords);
 				thisLevel.physics.arcade.collide(player,box,checkAnswer);
+		thisLevel.physics.arcade.collide(dragon,ground);
 
 
 	if(player.x >= startX && flagPlayer == 0)
@@ -246,6 +275,7 @@ function maintainComponents(game){
 		if(indexWord == words.length && thisLevel.time.now > completeTime)
 		{		
 			startCloudCreate[getCloudI + 1] = 1;
+			cloudDragon.destroy();
 			var componentText = addText(game,questionTextWords.x, thisLevel.world.centerY,'Task Completed',styleText);
 			soundPowerUp.play();
 			indexWord++;
@@ -282,25 +312,91 @@ function updateEnemyPhysics(){
 		thisLevel.physics.arcade.collide(enemyTwoGroup,ground,changeDirection);
 		thisLevel.physics.arcade.collide(enemyTwoGroup,platforms,changeDirection);
 		thisLevel.physics.arcade.collide(player,enemyTwoGroup,resetPlayer);
-			thisLevel.physics.arcade.collide(player,enemyBirdGroup,resetPlayer);
+		thisLevel.physics.arcade.collide(player,enemyBirdGroup,resetPlayer);
 		thisLevel.physics.arcade.overlap(enemyBirdGroup,nuts,killEnemy);
+		thisLevel.physics.arcade.overlap(enemyOneGroup,nuts,killEnemy);
+		thisLevel.physics.arcade.overlap(enemyTwoGroup,nuts,killEnemy);
+		thisLevel.physics.arcade.collide(dragon,nuts,collideNuts);
+}
 
+function collideNuts(dragon,nut){
+	nut.destroy();
+	dragon.damage(15);
+	console.log(dragon.health);
+}
+
+function collideDragon(player,dragon){
+	if(playerCollideDragon == false)
+	{
+		playerCollideDragon = true;
+		playerX = player.x;
+		console.log(player.health);
+		if(player.health <= 15)
+		{
+			player.reset(70,120);
+			player.health = 100;
+		}
+		else player.damage(30);	
+	}
 }
 
 function updatePlayerPhysics(){
-	thisLevel.physics.arcade.collide(player,ground);
-		thisLevel.physics.arcade.collide(player,platforms);
-		thisLevel.physics.arcade.overlap(player,coins,getCoin);
+	if(playerDie == false)
+	{
+		if(flagPlayerTime == false)
+		{
+			thisLevel.physics.arcade.collide(player,ground);
+			thisLevel.physics.arcade.collide(player,platforms,tweenPlatform);
+			thisLevel.physics.arcade.overlap(player,coins,getCoin);
+			thisLevel.physics.arcade.collide(player,dragon,collideDragon);
+		}
+	}
+	else{
+		playerDieTime = thisLevel.time.now + 1500;
+		player.body.collideWorldBounds = false;
+		playerDie = false;
+	}
+	if(thisLevel.time.now >= playerDieTime && flagPlayerTime == true)
+	{
+		flagPlayerTime = false;
+		player.reset(70,200);
+		playerDie = false;
+		// player.body.collideWorldBounds = true;
+		console.log("player reset");
+	}
+}
+
+function tweenPlatform(player,block){
+	if(block.body.touching.down == true)
+	{
+		var blockTween = getGame.add.tween(block).to({
+			y: block.y - 8
+		},100,'Linear',true,0,0,true);
+	}
 }
 
 function changeDirection(enemy,block){
 	if(enemy.body.touching.left == true || enemy.body.touching.right == true)
 	{
-			console.log("yo! Collided and velocity inversed");
-			enemy.body.velocity.x = -1 * parseInt(enemyData[currentLevel][parseInt(enemy.name)].velocity);
-			enemyData[currentLevel][parseInt(enemy.name)].velocity = -1 * parseInt(enemyData[currentLevel][parseInt(enemy.name)].velocity);
-			// flagEnemyDirection[enemy.name] = 1;
+		if(changeTime[enemy.name] <= thisLevel.time.now)
+		{
+			flagEnemyDirection[enemy.name] = 0;
+			// console.log("change",enemy.name);
+		}
+		if(flagEnemyDirection[enemy.name] == 0)
+		{
+			flagEnemyDirection[enemy.name] = 1;
+			// console.log("yo! Collided and velocity inversed");
+			enemy.body.velocity.x = -1 * (enemyData[currentLevel][parseInt(enemy.name)].velocity);
+			enemyData[currentLevel][parseInt(enemy.name)].velocity = -1 * (enemyData[currentLevel][parseInt(enemy.name)].velocity);
+			changeTime[enemy.name] = thisLevel.time.now + 100;
+			// if(enemy.body.velocity.x == (enemyData[currentLevel][parseInt(enemy.name)].velocity && thisLevel.time.now >= changeTime))
+			// {
+			// 	flagEnemyDirection[enemy.name] = 0;
+			// 	console.log("yo");
+			// }
 			// console.log(enemyData[currentLevel][parseInt(enemy.name)].velocity,enemyData[currentLevel][parseInt(enemy.name)],enemyData[currentLevel]);
+		}
 	}
 }
 
@@ -318,7 +414,7 @@ function collideEnemyOne(player,enemy){
 		}
 		else{ 
 			flagDie = true;
-			resetPlayer();
+			resetPlayer(player,enemy);
 			enemy.destroy();
 		}
 };
@@ -340,19 +436,18 @@ function enterTunnel(player,tunnel){
 	if(tunnel.body.touching.left == true)
 	{
 		soundPowerUp.play();
-		getGame.state.start('Scene');
+		getGame.state.start(tunnel.next);
 	}
 };
 
-function resetPlayer(){
+function resetPlayer(player,enemy){
 	soundDie.play();
-	player.reset(70,200);
-};
-
-function reset(){
-	soundDie.play();
-	player.reset(100,180);
-	mineEnemy.destroy();
+	enemy.destroy();
+	flagEnemyDie = true;
+	player.body.velocity.y = -350;
+	playerDie = true;
+	flagPlayerTime = true;
+	player.damage(20);
 };
 
 function getCoin(player,coin){
@@ -367,7 +462,15 @@ function shootNut(){
 		nut = nuts.getFirstExists(false);
 		if(nut){
 			nut.reset(player.x,player.y);
-			nut.body.velocity.y = -400;
+			// console.log(nut,nuts);
+			nut.body.allowGravity = false;
+			nut.body.setSize(24,24,4,4);
+			if(direction == "left")
+			{
+				nut.body.velocity.x = -200;
+			}
+			else nut.body.velocity.x = 200;
+			nut.play('fire');
 			shootTime = thisLevel.time.now + 900;
 		}
 	}
@@ -423,7 +526,7 @@ function checkAnswer(player,box){
 			else{
 				isWrongAnswer = true;
 				componentText = addText(getGame,Math.floor(sprite.x + sprite.width / 2), Math.floor(sprite.y + sprite.height + 29),'Wrong Answer! Try Again',style1,textGroup);
-				box.play('boxCollided');
+				// box.play('boxCollided');
 				score-=20;
 				scoreText.text = 'Score: ' + score;
 			}
@@ -434,27 +537,21 @@ function checkAnswer(player,box){
 function hoardingTaskCompleted(){
 	box.destroy();
 	textGroup.destroy();
+	questionImage.destroy();
 	soundPowerUp.play();
-	componentText = addText(getGame,Math.floor(sprite.x + sprite.width / 2), Math.floor(sprite.y + sprite.height / 2 + 5),'Correct Answer +50 Points\nTask Completed',style);		
-		// map.setCollision([1,2,27,57]);
-		// for(var j=0;j<data[getI]["noOfOptions"];j++)
-		// {
-		// 	map.putTileWorldXY(27,sprite.x + 12 + data[getI]["gap"]*j,sprite.y + sprite.height + 8,16,16);
-		// }
+	componentText = addText(getGame,Math.floor(sprite.x + sprite.width / 2), Math.floor(sprite.y + sprite.height / 2 + 5),'Correct Answer +50 Points\nTask Completed',style);
 	startHoardingCreate[getHoardingI + 1] = 1;
+	hoardingDragon.destroy();
 };
 
 function mineTaskCompleted(){
 	explosion = getGame.add.sprite(mineEnemy.x - 50,thisLevel.world.centerY - 65,'explosion');
 	explosion.animations.add('explode',null,7);
 	explosion.play('explode',7,false,true);
-	// enemyDie.play();
-	console.log(startMinesCreate);
 	flag3 = 1;
 	soundPowerUp.play();
 	componentText = addText(getGame,Math.floor(questionbgImage.x), Math.floor(questionbgImage.y + 5),'Correct Answer +50 Points\nTask Completed',styleMines);
 	startMinesCreate[getMinesI + 1] = 1;
-	console.log(startMinesCreate);
 };
 
 function enableCollisionNotGravity(game,sprite){
@@ -479,6 +576,7 @@ function createGroupSprite(game,group,sprite,key,x,y,name){
 function killEnemy(enemy1,nut){
 	enemyDie.play();
 	enemy1.kill();
+	nut.destroy();
 	score += 20;
    	scoreText.text = 'Score: ' + score;
 };
@@ -503,13 +601,18 @@ function handleTween(player,sprite){
 					handles.destroy();
 					dynamiteBoxes.destroy();
 					textGroupMines.destroy();
+					// flagEnemyDie = false;
 					for(var k=0;k<4;k++)
 					{
 						flagHandle[optionRepresent[k.toString()]] = 1;
 					}
 				}
 				else{
-					mineEnemy.body.velocity.x = -100;
+					// if(flagEnemyDie == false)
+					{
+						mineEnemy.body.velocity.x = -100;
+						// console.log("yo");
+					}
 					isWrongAnswer = true;
 					score-=20;
 					scoreText.text = 'Score: ' + score;
@@ -520,40 +623,89 @@ function handleTween(player,sprite){
 	}
 };
 
+function createDragon(x,type){
+	if(type == 'cloud')
+	{
+		cloudDragon = dragon.create(x,0,'dragon');
+		cloudDragon.anchor.setTo(0.5);
+		thisLevel.physics.arcade.enable(cloudDragon);
+		cloudDragon.body.immovable = true;
+		cloudDragon.body.collideWorldBounds = true;
+		cloudDragon.width = 150;
+		cloudDragon.height = 135;
+		cloudDragon.health = 100;
+	}
+	else {
+		hoardingDragon = dragon.create(x,0,'dragon');
+		hoardingDragon.anchor.setTo(0.5);
+		thisLevel.physics.arcade.enable(hoardingDragon);
+		hoardingDragon.body.immovable = true;
+		hoardingDragon.body.collideWorldBounds = true;
+		hoardingDragon.width = 150;
+		hoardingDragon.height = 135;
+		hoardingDragon.health = 100;
+	}
+	getGame.world.bringToTop(dragon);
+}
+
 function componentHoarding(game,i){
 	var arr = hoardingData[i];
-	sprite = game.add.sprite(parseInt(arr["bgImageX"]), parseInt(arr["bgImageY"]), arr["bgImageKey"]);
-   	sprite.width = arr["bgImageWidth"];
-   	sprite.height = arr["bgImageHeight"];
-	hoarding = game.add.image(parseInt(arr.hoardingX), parseInt(arr.hoardingY),arr.hoardingKey);
-	// hoarding.width = 100;
-	// hoarding.height = 150;
-	hoarding.sendToBack();
-	sprite.sendToBack();
+	hoarding = game.add.image(parseInt(arr.hoardingX),parseInt(arr.hoardingY),arr.hoardingKey);
+	hoarding.width = parseInt(arr.hoardingWidth);
+	hoarding.height = parseInt(arr.hoardingHeight);
+	sprite = {
+		x: hoarding.x + 5,
+		y: hoarding.y + 7,
+		width: hoarding.width * 140 / 150,
+		height: hoarding.height * 80 / 150,
+	}
+
+	questionImage = game.add.image(hoarding.x + hoarding.width / 2, 50,'white');
+	questionImage.anchor.setTo(0.5);
+	questionImage.width = hoarding.width * 7 /4;
+	questionImage.height = hoarding.height / 3;
 
 	textGroup = game.add.group();
-	style = { font: "11px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: sprite.width, align: "center", fontWeight: 'bold'};
+	style = { font: "11px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: questionImage.width, align: "center", fontWeight: 'bold'};
 
-   	componentText = addText(game, Math.floor(sprite.x + sprite.width / 2), Math.floor(sprite.y + sprite.height / 2 + 5), arr["question"] + "\n" + arr["options"],style,textGroup);
+   	componentText = addText(game, questionImage.x, questionImage.y, arr["question"],style,textGroup);
+   	componentText.anchor.setTo(0.5);
 
     box = game.add.group();
     thisLevel.physics.arcade.enableBody(box);
 
-    for(var j=0;j<arr["noOfOptions"];j++)
+    colorList = ['red','blue','green','orange'];
+
+    color = game.add.group();
+    thisLevel.physics.arcade.enableBody(color);
+
+    for(var j=0;j<2;j++)
     {
-    	console.log(sprite.x, sprite.width/arr.noOfOptions*j,sprite.width/arr.noOfOptions/2);
-	    box1 = createGroupSprite(game,box,box1,arr["boxKey"],sprite.x + sprite.width/arr.noOfOptions*j + sprite.width/arr.noOfOptions/2,sprite.y + sprite.height + 16,optionRepresent[j.toString()]);
-	    componentText = addText(game,box1.x,box1.y - 12, optionRepresent[j.toString()], style, textGroup);
-	   	box1.body.setSize(8,16.4,0);
+    	for(var n=0;n<2;n++)
+    	{
+    	    box2 = createGroupSprite(game,color,box2,colorList[j*2+n] + 'Box',sprite.x + sprite.width/2*n + sprite.width/4,sprite.y + sprite.height/2*j + sprite.height/4,optionRepresent[(j*2+n).toString()]);
+    	    componentText = addText(game,box2.x,box2.y, arr.options[optionRepresent[(j*2+n).toString()]], style, textGroup);
+	    	// box1.anchor.setTo(0.5);
+		    box2.width = sprite.width / 2;
+		    box2.height = sprite.height / 2;
+    	}
     }
-    box.callAll('animations.add', 'animations', 'box', [0],1,true);
-    box.callAll('animations.add', 'animations', 'boxCollided', [1],1,true);
-    box.callAll('play', null, 'box');
+
+	hoarding.sendToBack();
+	getGame.world.sendToBack(color);
+
+	var j=0;
+    for(var k in arr.options)
+    {
+	    box1 = createGroupSprite(game,box,box1,colorList[j],sprite.x + sprite.width/4*j + sprite.width/8,sprite.y + sprite.height + 16,k);
+	    j++;
+	    box1.width = box1.height = 16;
+	}
 
     getHoardingAnswer = arr["answer"];
     getHoardingI = i;
-        // game.world.bringToTop(textGroup);
-    // textGroup.bringToTop();
+
+    createDragon(sprite.x + 300,'hoarding');
 
     player.bringToTop();
 
@@ -562,17 +714,18 @@ function componentHoarding(game,i){
 
 function componentMines(game,i){
 	var arr = minesData[i];
-	questionbgImage = game.add.image(parseInt(arr["bgImageX"]), parseInt(arr["bgImageY"]) - 25,arr["bgImageKey"]);
+	questionbgImage = game.add.image(parseInt(arr["bgImageX"]), parseInt(arr["bgImageY"]),arr["bgImageKey"]);
 	questionbgImage.anchor.setTo(0.5);
 	questionbgImage.width = arr["bgImageWidth"];
 	questionbgImage.height = arr["bgImageHeight"];
 	handles = game.add.group();
     thisLevel.physics.arcade.enableBody(handles);
 	flagHandle = {};
+	// flagEnemyDie = false;
 
     for(var j=0;j<arr["noOfOptions"];j++)
     {
-	    handle = createGroupSprite(game,handles,handle,arr["handleKey"],parseInt(arr["handleX"]) + parseInt(arr["gap"])*j,parseInt(arr["handleY"]),optionRepresent[j.toString()]);
+	    handle = createGroupSprite(game,handles,handle,arr["handleKey"],questionbgImage.x + parseInt(arr["gap"])*j - 100,thisLevel.game.height - 44,optionRepresent[j.toString()]);
 	    handle.body.setSize(24,32.4,0);
 	    handle.scale.setTo(0.6);
 	    flagHandle[optionRepresent[j.toString()]] = 0;
@@ -588,26 +741,26 @@ function componentMines(game,i){
 
    	for( var j=0;j<arr["noOfOptions"];j++)
    	{
-	    dynamiteBox = createGroupSprite(game,dynamiteBoxes,dynamiteBox,arr["dynamiteBoxKey"],parseInt(arr["handleX"]) + parseInt(arr["gap"])*j,parseInt(arr["handleY"]) + 16,optionRepresent[j.toString()]);
+	    dynamiteBox = createGroupSprite(game,dynamiteBoxes,dynamiteBox,arr["dynamiteBoxKey"],questionbgImage.x + parseInt(arr["gap"])*j - 100,thisLevel.game.height - 28,optionRepresent[j.toString()]);
 	    textMines = addText(game,dynamiteBox.x + 2, dynamiteBox.y + 4 ,optionRepresent[j.toString()],styleMines,textGroupMines);
 	    dynamiteBox.scale.setTo(0.75);
    	}
 
-    mineEnemy = game.add.sprite(parseInt(arr["wallX"]) + 1*parseInt(arr["wallGap"]),thisLevel.world.centerY,arr["mineEnemyKey"]);
+    mineEnemy = game.add.sprite(questionbgImage.x + parseInt(arr["gap"])*5 -70,thisLevel.world.centerY,arr["mineEnemyKey"]);
     mineEnemy.anchor.setTo(0.5);
     game.physics.arcade.enable(mineEnemy);
-		// mineEnemy.animations.add('run',[0,1,2],7,true);
-		// mineEnemy.animations.play('run');
+    mineEnemy.animations.add('run',null,10,true);
+    mineEnemy.play('run');
 
 	getMinesAnswer = arr["answer"];
 
 	wall = game.add.group();
 	game.physics.arcade.enableBody(wall);
 
-    wall1 = createGroupSprite(game,wall,wall1,arr["wallKey"],parseInt(arr["wallX"]),parseInt(arr["wallY"]));
+    wall1 = createGroupSprite(game,wall,wall1,arr["wallKey"],questionbgImage.x + parseInt(arr["gap"])*4 -70,thisLevel.game.height - 70);
     wall1.scale.setTo(0.75,0.85);
-    wall1 = createGroupSprite(game,wall,wall1,arr["wallKey"],parseInt(arr["wallX"]) + 2*parseInt(arr["wallGap"]),parseInt(arr["wallY"]));
-    wall1.scale.setTo(0.75,0.85);
+    wall2 = createGroupSprite(game,wall,wall2,arr["wallKey"],wall1.x + 2*parseInt(arr["gap"]),wall1.y);
+    wall2.scale.setTo(0.75,0.85);
 
     getMinesI =i;
 
@@ -620,9 +773,9 @@ function componentFallingWords(game,i){
 	var arr = cloudData[i];
 	styleText = { font: "14px Arial", fill: "#ffffff", wordWrap: true, wordWrapWidth: thisLevel.game.width - 100, align: "center" };
 
-   	questionTextWords = addText(game,parseInt(arr.questionX),parseInt(arr.questionY), arr.question,styleText);
-
    	cloud = game.add.image(parseInt(arr.cloudX),parseInt(arr.cloudY),arr.cloudKey);
+
+   	questionTextWords = addText(game,cloud.x + 125,cloud.y - 16, arr.question,styleText);
 
    	cloudTween = game.add.tween(cloud).to({
 		x: cloud.x + 200
@@ -630,8 +783,6 @@ function componentFallingWords(game,i){
 
 	groupWords = game.add.group();
 	thisLevel.physics.arcade.enableBody(groupWords);
-
-		// console.log(wordsToFall);
 
 	correctCategory = arr.correctCategory;
 	words = [];
@@ -656,10 +807,84 @@ function componentFallingWords(game,i){
 
 	getCloudI = i;
 
-	startX = parseInt(arr.componentStartX);
-	console.log(startX,arr.componentStartX);
+	startX = cloud.x - 30;
 
 	player.bringToTop();
 
+	createDragon(cloud.x+350,'cloud');
+
 	indexCloud++;
+};
+
+//                                                             Scene Funtions Starts here!!!
+
+function sceneButtonClicked(player,button){
+	if(spacebar.space.isDown && openedModal == false)
+	{
+	 	reg.modal.showModal(button.name);
+	 	openModalType = button.name;
+	 	openedModal = true;
+	}
+}
+
+function createModal(game){
+	reg = {};
+	reg.modal = new gameModal(game);
+
+	for (var i=0;i<levelData.length;i++)
+	{
+		var arr = levelData[i].modalData;
+		console.log(arr,i);
+		reg.modal.createModal(arr);
+	}
+
+	openedModal = false;
+
+	button = game.add.group();
+	thisLevel.physics.arcade.enableBody(button);
+
+	for(i=0;i<levelData.length;i++)
+	{
+		var arr = levelData[i];
+		var shadow = game.add.sprite(parseInt(arr.buttonX) + 2,parseInt(arr.buttonY) + 2, arr.buttonKey);
+		shadow.anchor.setTo(0.5);
+	    shadow.tint = parseInt(arr.shadowColor);
+	    shadow.alpha = 0.6;
+	    // console.log("yo",shadow);
+		var m1 = createGroupSprite(game,button,m1,arr.buttonKey,parseInt(arr.buttonX), parseInt(arr.buttonY),arr.modalData.type);
+		m1.anchor.setTo(0.5);
+		shadow.width = m1.width = parseInt(arr.buttonWidth);
+		shadow.height = m1.height = parseInt(arr.buttonHeight);
+	}
+
+	game.world.bringToTop(button);
+}
+
+function updateScenePhysics(){
+	thisLevel.physics.arcade.overlap(player,button,sceneButtonClicked);
+	player.body.velocity.x = 0;
+	if(controls.up.isDown){
+		player.animations.play('jump');
+		soundJump.play();
+		player.body.velocity.y = -400;
+		jumpTimer = thisLevel.time.now + 750;
+	}
+	else if(controls.right.isDown){
+		player.animations.play('run');
+		player.scale.setTo(1,1);
+		player.body.velocity.x += playerSpeed;
+	}
+	else if(controls.left.isDown){
+		player.animations.play('run');
+		player.scale.setTo(-1,1);
+		player.body.velocity.x -= playerSpeed;
+	}
+	else {
+       	player.animations.play('idle');
+    }
+    if(enter.enter.isDown && openedModal == true)
+    {
+    	reg.modal.hideModal(openModalType);
+    	openedModal = false;
+    }
 }

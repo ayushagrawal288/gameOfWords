@@ -17,7 +17,7 @@ Game.Preloader.prototype = {
 		this.load.spritesheet('player',preloadData.player,parseInt(preloadData.playerSpriteX),parseInt(preloadData.playerSpriteY));
 		this.load.image('bird', preloadData.bird);
 		this.load.image('nut',preloadData.nut);
-		this.load.image(coinData.key,coinData.url);
+		this.load.image('coin',preloadData.coin);
 		this.load.audio('powerup',preloadData.soundPowerUp);		
 		this.load.audio('jump',preloadData.soundJump);
 		this.load.audio('enemyDie',preloadData.soundEnemyDie);
@@ -30,6 +30,18 @@ Game.Preloader.prototype = {
 		this.load.image('tunnelReverse',preloadData.tunnelReverse);
 		this.load.spritesheet('enemy1',"assets/enemyOne.png",16,16);
 		this.load.spritesheet('enemy2',"assets/enemy2.png",16,16);
+		this.load.spritesheet('power','assets/power1.png',32,32);
+		this.load.image('dragon','assets/dragon.png');
+
+		this.load.image('red','assets/h/red.png');
+		this.load.image('redBox','assets/h/redBox.png');
+		this.load.image('orange','assets/h/orange.png');
+		this.load.image('orangeBox','assets/h/orangeBox.png');
+		this.load.image('blue','assets/h/blue.png');
+		this.load.image('blueBox','assets/h/blueBox.png');
+		this.load.image('green','assets/h/green.png');
+		this.load.image('greenBox','assets/h/greenBox.png');
+		this.load.image('white','assets/h/white.png');
 
 		for (var i=0;i<hoardingData.length;i++)
 		{
@@ -57,9 +69,13 @@ Game.Preloader.prototype = {
 		}
 
 		this.load.image('background',preloadData.sceneBackground);
-		for(i=0;i<sceneButtons.length;i++)
-		{
-			this.load.image(sceneButtons[i].buttonKey, sceneButtons[i].button);
+		this.load.image('scene2',preloadData.scene2Background);
+		for(var k in sceneButtons){
+			var arr2 = sceneButtons[k];
+			for(i=0;i<arr2.length;i++)
+			{
+				this.load.image(arr2[i].buttonKey, arr2[i].button);
+			}
 		}
 		this.load.image("modalBG",preloadData.modalBG);
 	},

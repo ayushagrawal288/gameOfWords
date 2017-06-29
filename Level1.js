@@ -33,7 +33,7 @@ var optionRepresent = {
 	3: "D"
 };
 var mineEnemy;
-var wall,wall1;
+var wall,wall1,wall2;
 var explosion;
 var tunnelReverse;
 var groupWords,indexWord;
@@ -63,20 +63,17 @@ Game.Level1.prototype = {
 		initialiseComponentVariables();		
 		createNuts(game);
 
-		var image = this.add.button(1900,200, 'next',function(){
-			soundPowerUp.play();
-			game.state.start('Level2');
-		});
-		image.width = image.height = 32;
-
 		style1 = { font: "6px", fill: "#ffffff", align: "center"};
 
 		game.renderer.renderSession.roundPixels = true
 		
 		tunnelReverse = game.add.sprite(0,192,'tunnelReverse');
-		this.physics.arcade.enable(tunnelReverse);
-		tunnelReverse.body.allowGravity = false;
-		tunnelReverse.body.immovable = true;
+		enableCollisionNotGravity(game,tunnelReverse);
+
+		tunnel = game.add.sprite(levelData.width - 30,192,'tunnel');
+		enableCollisionNotGravity(game,tunnel);
+		tunnel.body.setSize(80,5,0,3);
+		tunnel.next = 'Scene2';
 
 		controls = this.input.keyboard.createCursorKeys();
 
@@ -90,6 +87,7 @@ Game.Level1.prototype = {
 		updateEnemyPhysics();
 		updatePlayerPhysics();
 		this.physics.arcade.collide(player,tunnelReverse);
+		this.physics.arcade.collide(player,tunnel,enterTunnel);
 
 		player.body.velocity.x = 0;
 
