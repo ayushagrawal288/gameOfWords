@@ -2,16 +2,11 @@ Game.Scene = function(game){
 
 }
 
-var reg = {};
-var spacebar;
-var button;
-var enter;
-
 Game.Scene.prototype = {
 	create: function(game){
 		game.scale.setGameSize(levelDimensions.scene.width, levelDimensions.scene.height);
 		this.world.setBounds(0,0,levelDimensions.scene.width, levelDimensions.scene.height)
-		sceneImage = this.add.image(this.game.width / 2, this.game.height / 2, 'background');
+		sceneImage = this.add.image(this.game.width / 2, this.game.height / 2, 'scene1');
 		sceneImage.anchor.set(0.5);
 		sceneImage.width = this.game.width;
 		sceneImage.height = this.game.height;

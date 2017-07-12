@@ -73,27 +73,99 @@
 //       "wordWrapWidth" : "250"
 // }
 
-      // "itemsArr" : [ {
-      //   "content" : "modalBG",
-      //   "contentScale" : "1",
-      //   "height" : "150",
-      //   "type" : "image",
-      //   "width" : "300"
-      // }, {
-      //   "content" : "Mars",
-      //   "fontSize" : "15",
-      //   "offsetY" : "-50",
-      //   "type" : "text",
-      //   "wordWrapWidth" : "250"
-      // }, {
-      //   "content" : "Mars is the fourth planet from the Sun and is the second smallest planet in the solar system. Named after the Roman god of war, Mars is also often described as the “Red Planet” due to its reddish appearance. Mars is a terrestrial planet with a thin atmosphere composed primarily of carbon dioxide.",
-      //   "fontSize" : "11",
-      //   "offsetY" : "10",
-      //   "type" : "text",
-      //   "wordWrapWidth" : "250"
-      // } ],
+//       "itemsArr" : [ {
+//         "content" : "modalBG",
+//         "contentScale" : "1",
+//         "height" : "150",
+//         "type" : "image",
+//         "width" : "300"
+//       }, {
+//         "content" : "Mars",
+//         "fontSize" : "15",
+//         "offsetY" : "-50",
+//         "type" : "text",
+//         "wordWrapWidth" : "250"
+//       }, {
+//         "content" : "Mars is the fourth planet from the Sun and is the second smallest planet in the solar system. Named after the Roman god of war, Mars is also often described as the “Red Planet” due to its reddish appearance. Mars is a terrestrial planet with a thin atmosphere composed primarily of carbon dioxide.",
+//         "fontSize" : "11",
+//         "offsetY" : "10",
+//         "type" : "text",
+//         "wordWrapWidth" : "250"
+//       } ],
 
 // var level = [
+//       {
+//             id: "level1",
+//             height: 200,
+//             width: 400,
+//             coin: [{
+//                   "x" : "200",
+//                   "y" : "165"
+//                 }, {
+//                   "x" : "280",
+//                   "y" : "165"
+//                 }, {
+//                   "x" : "510",
+//                   "y" : "165"
+//                 }, {
+//                   "x" : "560",
+//                   "y" : "165"
+//                 } ],
+//             platform: [ {
+//                     "platformLength" : "50",
+//                     "startX" : "150",
+//                     "startY" : "180"
+//                   }, {
+//                     "platformLength" : "100",
+//                     "startX" : "170",
+//                     "startY" : "120"
+//                   }, {
+//                     "platformLength" : "16",
+//                     "startX" : "170",
+//                     "startY" : "104"
+//                   }, {
+//                     "platformLength" : "16",
+//                     "startX" : "266",
+//                     "startY" : "104"
+//                   }, {
+//                     "platformLength" : "70",
+//                     "startX" : "500",
+//                     "startY" : "180"
+//                   }, {
+//                     "platformLength" : "70",
+//                     "startX" : "590",
+//                     "startY" : "120"
+//                   }, {
+//                     "platformLength" : "120",
+//                     "startX" : "680",
+//                     "startY" : "70"
+//                   } ],
+//             enemy : [ {
+//                   "type" : "one",
+//                   "velocity" : -70,
+//                   "x" : "260",
+//                   "y" : "160"
+//                 }, {
+//                   "type" : "one",
+//                   "velocity" : -70,
+//                   "x" : "600",
+//                   "y" : "160"
+//                 }, {
+//                   "type" : "two",
+//                   "velocity" : -20,
+//                   "x" : "110",
+//                   "y" : "160"
+//                 }, {
+//                   "type" : "two",
+//                   "velocity" : -20,
+//                   "x" : "500",
+//                   "y" : "160"
+//                 }, {
+//                   "type" : "bird",
+//                   "x" : "200",
+//                   "y" : "120"
+//                 } ]
+//       },
 //       {
 //             id: "level1",
 //             height: 200,

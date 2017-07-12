@@ -4,8 +4,8 @@ Game.Scene2 = function(game){
 
 Game.Scene2.prototype = {
 	create: function(game){
-		game.scale.setGameSize(levelDimensions.scene.width, levelDimensions.scene.height);
-		this.world.setBounds(0,0,levelDimensions.scene.width, levelDimensions.scene.height)
+		game.scale.setGameSize(levelDimensions.scene2.width, levelDimensions.scene2.height);
+		this.world.setBounds(0,0,levelDimensions.scene2.width, levelDimensions.scene2.height)
 		sceneImage = this.add.image(this.game.width / 2, this.game.height / 2, 'scene2');
 		sceneImage.anchor.set(0.5);
 		sceneImage.width = this.game.width;

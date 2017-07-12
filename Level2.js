@@ -8,7 +8,6 @@ Game.Level2.prototype = {
 		this.stage.backgroundColor = "#3A0900";
 		getGame=game;
 		thisLevel = this;
-		this.physics.arcade.gravity.y = 1000;
 
 		currentLevel = 'level2';
 
@@ -20,16 +19,15 @@ Game.Level2.prototype = {
 		createPlayer(80,210);
 		createCoin(game,currentLevel);
 		initialiseComponentVariables();		
-		createNuts(game);
+		createNuts(game,10);
+		createBar(game);
+		createMainDragon(100)
 
 		style1 = { font: "6px", fill: "#ffffff", align: "center"};
 
 		game.renderer.renderSession.roundPixels = true
 
 		controls = this.input.keyboard.createCursorKeys();
-
-		scoreText = game.add.text(24, 24, 'Score:' + score, { fontSize: '32px', fill: '#000' });
-		scoreText.fixedToCamera = true;
 
 		soundNew.play();
 	},
@@ -41,11 +39,6 @@ Game.Level2.prototype = {
 		player.body.velocity.x = 0;
 
 		game.camera.focusOnXY(player.x + 100,player.y);
-
-		if(indexCloud == 0 || indexMines == 0 || indexHoarding == 0)
-		{
-			tunnelReverse.bringToTop();
-		}
 
 		createComponent(game,'Level2');
 

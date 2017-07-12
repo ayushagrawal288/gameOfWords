@@ -16,6 +16,12 @@ database.child("Config").on("value", function(snapshot) {
 	_getEvent()
 });
 
+var colorData = [];
+database.child("Color").on("value", function(snapshot) {
+  	colorData = snapshot.val();
+	flag++;
+	_getEvent()
+});
 
 var coinData = [];
 database.child("Coin").on("value", function(snapshot) {
@@ -45,6 +51,10 @@ database.child("Words").on("value", function(snapshot) {
 var sceneButtons = [];
 database.child("Scene").on("value", function(snapshot) {
 	flag++;
+	// for(var k in snapshot.val())
+	// {
+	// 	sceneButtons.push(snapshot.val()[k]);
+	// }
 	sceneButtons = snapshot.val();
 	_getEvent()
 });
@@ -87,7 +97,7 @@ database.child("Mines").on("value", function(snapshot) {
 });
 
 function _getEvent() {
-	if(flag == 9){
+	if(flag == 10){
 	var game = new Phaser.Game(Game.Params.baseWidth,Game.Params.baseHeight,Phaser.CANVAS,'');
 			game.state.add('Boot',Game.Boot);
 			game.state.add('Preloader',Game.Preloader);
@@ -96,6 +106,7 @@ function _getEvent() {
 			game.state.add('PreLevel1',Game.PreLevel1);
 			game.state.add('Scene',Game.Scene);
 			game.state.add('Scene2',Game.Scene2);
+			game.state.add('MainMenu',Game.MainMenu);
 			
 			game.state.start('Boot');
 		}

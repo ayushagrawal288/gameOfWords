@@ -9,12 +9,9 @@ Game.Preloader.prototype = {
 		this.preloadBar.anchor.setTo(0.5,0.5);
 		this.time.advancedTiming = true;
 
-		this.load.image("block","assets/block.png");
-		this.load.tilemap('map',preloadData.levelMap);
-		this.load.tilemap('premap',preloadData.preLevelMap);
-		this.load.image('tileset',preloadData.tileset);
+		this.load.image("block",preloadData.block);
 		this.load.setPreloadSprite(this.preloadBar);
-		this.load.spritesheet('player',preloadData.player,parseInt(preloadData.playerSpriteX),parseInt(preloadData.playerSpriteY));
+		this.load.spritesheet('player',preloadData.player,parseInt(preloadData.playerSpriteWidth),parseInt(preloadData.playerSpriteHeight));
 		this.load.image('bird', preloadData.bird);
 		this.load.image('nut',preloadData.nut);
 		this.load.image('coin',preloadData.coin);
@@ -24,31 +21,33 @@ Game.Preloader.prototype = {
 		this.load.audio('soundCoin',preloadData.soundCoin);
 		this.load.audio('soundDie',preloadData.soundDie);
 		this.load.audio('soundNew',preloadData.soundNew);
-		this.load.spritesheet('explosion',preloadData.explosion,parseInt(preloadData.explosionSpriteX),parseInt(preloadData.explosionSpriteY));
-		this.load.image('next',preloadData.next);
+		this.load.audio('backgroundMusic',preloadData.soundBackground);
+		this.load.spritesheet('explosion',preloadData.explosion,parseInt(preloadData.explosionSpriteWidth),parseInt(preloadData.explosionSpriteHeight));
 		this.load.image('tunnel',preloadData.tunnel);
 		this.load.image('tunnelReverse',preloadData.tunnelReverse);
-		this.load.spritesheet('enemy1',"assets/enemyOne.png",16,16);
-		this.load.spritesheet('enemy2',"assets/enemy2.png",16,16);
-		this.load.spritesheet('power','assets/power1.png',32,32);
-		this.load.image('dragon','assets/dragon.png');
+		this.load.spritesheet('enemy1',preloadData.enemyType1,preloadData.enemy1SpriteWidth,preloadData.enemy1SpriteHeight);
+		this.load.spritesheet('enemy2',preloadData.enemyType2,preloadData.enemy2SpriteWidth,preloadData.enemy2SpriteHeight);
+		this.load.spritesheet('power',preloadData.playerPower,preloadData.playerPowerSpriteWidth,preloadData.playerPowerSpriteHeight);
 
-		this.load.image('red','assets/h/red.png');
-		this.load.image('redBox','assets/h/redBox.png');
-		this.load.image('orange','assets/h/orange.png');
-		this.load.image('orangeBox','assets/h/orangeBox.png');
-		this.load.image('blue','assets/h/blue.png');
-		this.load.image('blueBox','assets/h/blueBox.png');
-		this.load.image('green','assets/h/green.png');
-		this.load.image('greenBox','assets/h/greenBox.png');
-		this.load.image('white','assets/h/white.png');
+		this.load.image('playNow','assets/play.png');
+
+		this.load.spritesheet('dragon','assets/dragon1.png',256,256);
+		this.load.spritesheet('fire','assets/fire.png',512,512);
+
+		this.load.image('bg','assets/yo3.png');
+
+		this.load.image('heart',preloadData.heart);
+
+		for(var i in colorData)
+		{
+			this.load.image(i,colorData[i]);
+		}
 
 		for (var i=0;i<hoardingData.length;i++)
 		{
 			var arr2 = hoardingData[i];
 			this.load.image(arr2["bgImageKey"], arr2["bgImage"]);
 			this.load.image(arr2["hoardingKey"], arr2["hoardingImage"]);
-			this.load.spritesheet(arr2["boxKey"], arr2["box"],parseInt(arr2["boxSpriteWidth"]),parseInt(arr2["boxSpriteHeight"]));
 		}
 
 		for(var i=0;i<minesData.length;i++)
@@ -68,19 +67,23 @@ Game.Preloader.prototype = {
 			this.load.image(arr2.cloudKey,arr2.cloud);
 		}
 
-		this.load.image('background',preloadData.sceneBackground);
+		this.load.image('scene1',preloadData.sceneBackground);
 		this.load.image('scene2',preloadData.scene2Background);
 		for(var k in sceneButtons){
 			var arr2 = sceneButtons[k];
-			for(i=0;i<arr2.length;i++)
+			for(var i in arr2)
 			{
-				this.load.image(arr2[i].buttonKey, arr2[i].button);
+				if(arr2[i].isSpriteSheet == true)
+				{
+					this.load.spritesheet(arr2[i].buttonKey, arr2[i].button,arr2[i].spriteWidth,arr2[i].spriteHeight);					
+				}
+				else this.load.image(arr2[i].buttonKey, arr2[i].button);
 			}
 		}
 		this.load.image("modalBG",preloadData.modalBG);
 	},
 
 	create: function() {
-			this.state.start('PreLevel1');
+			this.state.start('MainMenu');
 	}
 };
