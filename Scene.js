@@ -17,13 +17,12 @@ Game.Scene.prototype = {
 
 		levelData = sceneButtons[currentLevel];
 
-		createModal(game);
+		createBasicModal(game);
 
 		createPlayer(80,210);
 
 		controls = this.input.keyboard.createCursorKeys();
 		spacebar = this.input.keyboard.addKeys({'space': Phaser.Keyboard.SPACEBAR});
-		enter = this.input.keyboard.addKeys({'enter':Phaser.Keyboard.ENTER});
 
 		soundNew.play();
 
@@ -34,6 +33,7 @@ Game.Scene.prototype = {
 		enableCollisionNotGravity(game,tunnel);
 		tunnel.body.setSize(80,29,0,3);
 		tunnel.next = 'Level1';
+		flagNext = true;
 	},
 
 	update: function(game){

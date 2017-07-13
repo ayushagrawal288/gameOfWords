@@ -3,7 +3,7 @@
 var reg = {};
 var spacebar;
 var button;
-var enter;
+var modalOpenTime;
 
 // level type variables
 
@@ -11,6 +11,7 @@ var playerSpeed = 150;
 var jumpTimer = 0;
 var shootTime = 0;
 var fallTime = 0;
+var flagNext;
 var nuts;
 var text;
 var componentText,textGroup;
@@ -98,6 +99,17 @@ var mainDragon,flagShootFire,flagCloudFire;
 // creates basic level structure i.e. ground and platforms and manages bgImage and size of game
 
 function createLevelStructure(game,levelData){
+	if(levelData.width % 16 != 0)
+		{
+			levelData.width = (levelData.width / 16 + 1) * 16;
+		}
+		if(levelData.height % 16 != 0)
+		{
+			levelData.height = (Math.floor(levelData.height / 16) + 1) * 16;
+		}
+		game.scale.setGameSize(500, levelData.height);
+		thisLevel.world.setBounds(0,0,parseInt(levelData.width),parseInt(levelData.height));
+		
 	indexB = 0;
 		bg.width = 0;
 		widthLeft = levelData.width;
@@ -110,16 +122,6 @@ function createLevelStructure(game,levelData){
 			indexB++;			
 		}
 
-	if(levelData.width % 16 != 0)
-		{
-			levelData.width = (levelData.width / 16 + 1) * 16;
-		}
-		if(levelData.height % 16 != 0)
-		{
-			levelData.height = (Math.floor(levelData.height / 16) + 1) * 16;
-		}
-		thisLevel.world.setBounds(0,0,parseInt(levelData.width),parseInt(levelData.height));
-		
 		ground = game.add.group();
 
 		for(var i =0;i<parseInt(levelData.width) / 16;i++)
@@ -683,13 +685,47 @@ function EnemyBird(game,group,sprite,key,x,y,name){
 // enter tunnnel & changes level to next
 
 function enterTunnel(player,tunnel){
-	if(tunnel.body.touching.left == true)
+	if(tunnel.body.touching.left == true && flagNext == true)
 	{
+		flagNext = false;
 		soundPowerUp.play();
 		bgMusic.stop();
-		getGame.state.start(tunnel.next);
+		levelCompleted(tunnel);
+		// getGame.state.start(tunnel.next);
 	}
 };
+
+function levelCompleted(tunnel){
+	var m = getGame.add.graphics();
+    m.beginFill(0x000000, 0.7);
+    m.drawRect(0, 0, thisLevel.world.width, thisLevel.world.height);
+    m.endFill();
+	a = getGame.add.sprite(thisLevel.game.width / 2,thisLevel.world.centerY,'modalBG');
+	a.anchor.setTo(0.5);
+	a.width = thisLevel.game.width / 2;
+	a.height = thisLevel.game.height / 2;
+	a.fixedToCamera = true;
+	a.bringToTop();
+
+	var text = getGame.add.text(a.x,a.y-a.height/4, 'Level Completed\n Score = ' + score, {
+	    font: '15px Arial',
+        fill: "#000000",
+        stroke: "#000000",
+        align: 'center',
+        wordWrap: true,
+        wordWrapWidth: a.width - 50
+    });
+	text.anchor.setTo(0.5);
+	text.fixedToCamera = true;
+	text.bringToTop();
+	var next = getGame.add.button(a.x,a.y+a.height/4,'next',function(snap){
+		getGame.state.start(tunnel.next);
+	})
+	next.anchor.setTo(0.5);
+	next.height = next.width = a.width/6;
+	next.fixedToCamera = true;
+	next.bringToTop();
+}
 
 // fired when player collides with an enemy.
 
@@ -753,7 +789,7 @@ function startFallingWords(cloud){
 		fallText.name = words[indexWord].category;
 		indexWord++;
 		var fallTween = getGame.add.tween(fallText).to({
-			y: fallText.y + 200
+			y: fallText.y + thisLevel.game.height
 		},5000,'Linear',true);
 		fallTime = thisLevel.time.now + 1500;
 		completeTime = thisLevel.time.now + 5000;
@@ -830,6 +866,7 @@ function hoardingTaskCompleted(){
 
 function mineTaskCompleted(){
 	explosion = getGame.add.sprite(mineEnemy.x - 50,thisLevel.world.centerY - 65,'explosion');
+	explosion.y = thisLevel.world.height - explosion.height;
 	explosion.animations.add('explode',null,7);
 	explosion.play('explode',7,false,true);
 	soundPowerUp.play();
@@ -1010,6 +1047,7 @@ function createEnemyDragon(d,x,key,group){
 	d = getGame.add.sprite(x,thisLevel.game.height/2,key,null,group);
 		thisLevel.physics.arcade.enable(d);
 		d.body.allowGravity = false;
+		d.body.setSize(200,200,38,18);
 		d.anchor.setTo(0.5);
 		d.animations.add('ho',null,8,true);
 		d.play('ho');
@@ -1250,23 +1288,26 @@ function componentFallingWords(game,i){
 function sceneButtonClicked(player,button){
 	if(spacebar.space.isDown && openedModal == false)
 	{
-	 	reg.modal.showModal(button.name);
+	 	getGame.world.bringToTop(getGame.modals[button.name]);
+    	getGame.modals[button.name].visible = true;
 	 	openModalType = button.name;
 	 	openedModal = true;
+	 	modalOpenTime = thisLevel.time.now + 1000;
 	}
 }
 
 // Creates Modal for scene
 
-function createModal(game){
-	reg = {};
-	reg.modal = new gameModal(game);
+function createBasicModal(game){
+    getGame.modals = {};
+
+    modalOpenTime = thisLevel.time.now;
 
 	for (var i=0;i<levelData.length;i++)
 	{
 		var arr = levelData[i].modalData;
 		console.log(i);
-		reg.modal.createModal(arr);
+		createModal(getGame,arr);
 	}
 
 	openedModal = false;
@@ -1294,11 +1335,6 @@ function createModal(game){
 		m1.play('start');
 		m1.width = parseInt(arr.buttonWidth);
 		m1.height = parseInt(arr.buttonHeight);
-		// console.log(m1,i);
-		// if(i==2)
-		// {
-		// 	m1.animations.add('start',null,5,true);	
-		// }
 	}
 
 	game.world.bringToTop(button);
@@ -1328,9 +1364,160 @@ function updateScenePhysics(){
 	else {
        	player.animations.play('idle');
     }
-    if(enter.enter.isDown && openedModal == true)
+    if(spacebar.space.isDown && openedModal == true && modalOpenTime <= thisLevel.time.now)
     {
-    	reg.modal.hideModal(openModalType);
+    	hideModal(openModalType);
     	openedModal = false;
     }
+}
+
+function createModal(game,options) {
+    var type = options.type || ''; // must be unique
+    var includeBackground = options.includeBackground; // maybe not optional
+    var backgroundColor = options.backgroundColor || "0x000000";
+    var backgroundOpacity = options.backgroundOpacity || 0.7;
+    var modalCloseOnInput = options.modalCloseOnInput || false;
+    var modalBackgroundCallback = options.modalBackgroundCallback || false;
+    var vCenter = options.vCenter || true;
+    var hCenter = options.hCenter || true;
+    var itemsArr = options.itemsArr || [];
+    var fixedToCamera = options.fixedToCamera || false;
+
+    var modal;
+    var modalGroup = game.add.group();
+    if (fixedToCamera === true) {
+        modalGroup.fixedToCamera = true;
+        modalGroup.cameraOffset.x = 0;
+        modalGroup.cameraOffset.y = 0;
+    }
+
+    if (includeBackground === true) {
+        modal = game.add.graphics(game.width, game.height);
+        modal.beginFill(backgroundColor, backgroundOpacity);
+        modal.x = 0;
+        modal.y = 0;
+
+        modal.drawRect(0, 0, game.width, game.height);
+
+        if (modalCloseOnInput === true) {
+            var innerModal = game.add.sprite(0, 0);
+            innerModal.inputEnabled = true;
+            innerModal.width = game.width;
+            innerModal.height = game.height;
+            innerModal.type = type;
+            innerModal.input.priorityID = 0;
+            innerModal.events.onInputDown.add(function (e, pointer) {
+                hideModal(e.type);
+            });
+
+            modalGroup.add(innerModal);
+        } 
+        else {
+            modalBackgroundCallback = true;
+        }
+    }
+
+    if (modalBackgroundCallback) {
+        var innerModal = game.add.sprite(0, 0);
+        innerModal.inputEnabled = true;
+        innerModal.width = game.width;
+        innerModal.height = game.height;
+        innerModal.type = type;
+        innerModal.input.priorityID = 0;
+
+        modalGroup.add(innerModal);
+    }
+            // add the bg
+    if (includeBackground) {
+        modalGroup.add(modal);
+    }
+
+    var centerX = game.width / 2;
+    var centerY = game.height / 2;
+
+    var bgKey = options.bgKey;
+    var bgHeight = parseInt(options.bgHeight) || null;
+    var bgWidth = parseInt(options.bgWidth) || null;
+    var bgOffsetX = parseInt(options.bgOffsetX) || 0;
+    var bgOffsetY = parseInt(options.bgOffsetY) || 0;
+    var itemFontfamily = options.fontFamily || 'Arial';
+    var titleText = options.titleText;
+    var titleOffsetX = parseInt(options.titleOffsetX) || 0;
+    var titleOffsetY = parseInt(options.titleOffsetY) || 0;
+    var titleFontSize = parseInt(options.titleFontSize) || 32;
+    var descText = options.descriptionText;
+    var descOffsetX = parseInt(options.descriptionOffsetX) || 0;
+    var descOffsetY = parseInt(options.descriptionOffsetY) || 0;
+    var descFontSize = parseInt(options.descriptionFontSize) || 32;
+    var itemwordWrapWidth = parseInt(options.wordWrapWidth) || null;
+
+    var modalBG = game.add.image(0, 0, bgKey);
+    modalBG.contentType = 'image';
+    if(bgHeight != null)
+    {
+        modalBG.height = bgHeight;
+    }
+    if(bgWidth != null)
+    {
+        modalBG.width = bgWidth;
+    }
+    modalBG.x = (centerX - ((modalBG.width) / 2)) + bgOffsetX;
+    modalBG.y = (centerY - ((modalBG.height) / 2)) + bgOffsetY;
+
+    modalBG.offsetX = bgOffsetX;
+    modalBG.offsetY = bgOffsetY;
+
+    modalBG.bringToTop();
+    modalGroup.add(modalBG);
+    modalBG.bringToTop();
+    modalGroup.bringToTop(modalBG);
+
+    var modalTitle = game.add.text(0, 0, titleText, {
+	    font: titleFontSize + 'px ' + itemFontfamily,
+        fill: "#000000",
+        stroke: "#000000",
+        align: 'center',
+        wordWrap: true,
+        wordWrapWidth: itemwordWrapWidth
+    });
+    modalTitle.contentType = 'text';
+    modalTitle.update();
+    modalTitle.x = ((game.width / 2) - (modalTitle.width / 2)) + titleOffsetX;
+    modalTitle.y = ((game.height / 2) - (modalTitle.height / 2)) + titleOffsetY;
+
+    modalTitle.offsetX = titleOffsetX;
+    modalTitle.offsetY = titleOffsetY;
+
+    modalTitle.bringToTop();
+    modalGroup.add(modalTitle);
+    modalTitle.bringToTop();
+    modalGroup.bringToTop(modalTitle);                
+
+    var modalDesc = game.add.text(0, 0, descText, {
+        font: descFontSize + 'px ' + itemFontfamily,
+        fill: "#000000",
+        stroke: "#000000",
+        align: 'center',
+        wordWrap: true,
+        wordWrapWidth: itemwordWrapWidth
+    });
+    modalDesc.contentType = 'text';
+    modalDesc.update();
+    modalDesc.x = ((game.width / 2) - (modalDesc.width / 2)) + descOffsetX;
+    modalDesc.y = ((game.height / 2) - (modalDesc.height / 2)) + descOffsetY;
+
+    modalDesc.offsetX = descOffsetX;
+    modalDesc.offsetY = descOffsetY;
+
+    modalDesc.bringToTop();
+    modalGroup.add(modalDesc);
+    modalDesc.bringToTop();
+    modalGroup.bringToTop(modalDesc);
+
+    modalGroup.visible = false;
+    game.modals[type] = modalGroup;
+}
+
+function hideModal(type) {
+    getGame.modals[type].visible = false;
 }

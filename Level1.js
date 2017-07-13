@@ -32,6 +32,7 @@ Game.Level1.prototype = {
 		tunnel = game.add.sprite(levelData.width - 30,192,'tunnel');
 		enableCollisionNotGravity(game,tunnel);
 		tunnel.next = 'Scene2';
+		flagNext = true;
 
 		controls = this.input.keyboard.createCursorKeys();
 

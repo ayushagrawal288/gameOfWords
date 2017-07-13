@@ -12,7 +12,6 @@ Game.Level2.prototype = {
 		currentLevel = 'level2';
 
 		levelData = levelDimensions.level2;
-		console.log("yo!Level2"); 
 
 		createLevelStructure(game,levelData);
 		createEnemy(game,currentLevel);

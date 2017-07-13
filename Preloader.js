@@ -34,6 +34,8 @@ Game.Preloader.prototype = {
 		this.load.spritesheet('dragon','assets/dragon1.png',256,256);
 		this.load.spritesheet('fire','assets/fire.png',512,512);
 
+		this.load.image('next','assets/next.png');
+
 		this.load.image('bg','assets/yo3.png');
 
 		this.load.image('heart',preloadData.heart);
@@ -62,7 +64,6 @@ Game.Preloader.prototype = {
 
 		for(var i=0;i<cloudData.length;i++)
 		{
-
 			var arr2 = cloudData[i];
 			this.load.image(arr2.cloudKey,arr2.cloud);
 		}

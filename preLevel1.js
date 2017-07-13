@@ -16,7 +16,7 @@ Game.PreLevel1.prototype = {
 		createEnemy(game,'prelevel');
 		createPlayer(80,210);
 		createCoin(game,'preLevel');
-		initialiseComponentVariables();		
+		initialiseComponentVariables();
 		createNuts(game,10);
 		createBar(game);
 		createMainDragon(100)
@@ -29,6 +29,7 @@ Game.PreLevel1.prototype = {
 		enableCollisionNotGravity(game,tunnel);
 		// tunnel.body.setSize(80,5,0,3);
 		tunnel.next = 'Scene';
+		flagNext = true;
 
 		soundNew.play();
 	},
@@ -49,5 +50,15 @@ Game.PreLevel1.prototype = {
 		maintainComponents(game);
 
 		updatePlayer();
-	}
+	},
+
+	// render for  debugging
+
+	// render: function(game){
+	// 	game.debug.body(hoardingDragon);
+	// 	game.debug.body(player);
+	// 	box.forEach(function(snap){
+	// 		game.debug.body(snap);
+	// 	});
+	// }
 }
