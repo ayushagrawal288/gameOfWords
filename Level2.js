@@ -11,12 +11,12 @@ Game.Level2.prototype = {
 
 		currentLevel = 'level2';
 
-		levelData = levelDimensions.level2;
+		levelData = levelDimensions[currentLevel];
 
 		createLevelStructure(game,levelData);
-		createEnemy(game,currentLevel);
+		createEnemy(game,levelData);
 		createPlayer(80,210);
-		createCoin(game,currentLevel);
+		createCoin(game,levelData);
 		initialiseComponentVariables();		
 		createNuts(game,10);
 		createBar(game);

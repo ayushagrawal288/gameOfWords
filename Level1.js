@@ -9,14 +9,14 @@ Game.Level1.prototype = {
 		getGame=game;
 		thisLevel = this;
 
-		currentLevel = 'level';
+		currentLevel = 'level1';
 
-		levelData = levelDimensions.level; 
+		levelData = levelDimensions[currentLevel];
 
 		createLevelStructure(game,levelData);
-		createEnemy(game,currentLevel);
+		createEnemy(game,levelData);
 		createPlayer(80,210);
-		createCoin(game,currentLevel);
+		createCoin(game,levelData);
 		initialiseComponentVariables();		
 		createNuts(game,10);
 		createBar(game);
@@ -26,10 +26,10 @@ Game.Level1.prototype = {
 
 		game.renderer.renderSession.roundPixels = true
 		
-		tunnelReverse = game.add.sprite(0,192,'tunnelReverse');
+		tunnelReverse = game.add.sprite(0,this.world.height - 48,'tunnelReverse');
 		enableCollisionNotGravity(game,tunnelReverse);
 
-		tunnel = game.add.sprite(levelData.width - 30,192,'tunnel');
+		tunnel = game.add.sprite(this.world.width - 30,this.world.height - 48,'tunnel');
 		enableCollisionNotGravity(game,tunnel);
 		tunnel.next = 'Scene2';
 		flagNext = true;

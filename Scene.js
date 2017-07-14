@@ -4,18 +4,20 @@ Game.Scene = function(game){
 
 Game.Scene.prototype = {
 	create: function(game){
-		game.scale.setGameSize(levelDimensions.scene.width, levelDimensions.scene.height);
-		this.world.setBounds(0,0,levelDimensions.scene.width, levelDimensions.scene.height)
-		sceneImage = this.add.image(this.game.width / 2, this.game.height / 2, 'scene1');
-		sceneImage.anchor.set(0.5);
-		sceneImage.width = this.game.width;
-		sceneImage.height = this.game.height;
-
 		getGame = game;
 		thisLevel = this;
 		currentLevel = 'scene1'
 
-		levelData = sceneButtons[currentLevel];
+		levelData = levelDimensions[currentLevel];
+		game.scale.setGameSize(levelData.width, levelData.height);
+		this.world.setBounds(0,0,levelData.width, levelData.height)
+		sceneImage = this.add.image(this.game.width / 2, this.game.height / 2, levelData.id + 'bg');
+		sceneImage.anchor.set(0.5);
+		sceneImage.width = this.game.width;
+		sceneImage.height = this.game.height;
+
+
+		sceneData = sceneButtons[currentLevel];
 
 		createBasicModal(game);
 
@@ -29,7 +31,7 @@ Game.Scene.prototype = {
 		tunnelReverse = game.add.sprite(0,208,'tunnelReverse');
 		enableCollisionNotGravity(game,tunnelReverse);
 
-		tunnel = game.add.sprite(levelDimensions.scene.width - 30,208,'tunnel');
+		tunnel = game.add.sprite(this.world.width - 30,208,'tunnel');
 		enableCollisionNotGravity(game,tunnel);
 		tunnel.body.setSize(80,29,0,3);
 		tunnel.next = 'Level1';

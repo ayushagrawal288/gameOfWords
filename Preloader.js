@@ -37,6 +37,18 @@ Game.Preloader.prototype = {
 		this.load.image('next','assets/next.png');
 
 		this.load.image('bg','assets/yo3.png');
+		this.load.image('night','assets/night.png');
+
+		for(var i in levelDimensions){
+			var arr2 = levelDimensions[i];
+			this.load.image(i+'bg',arr2.bgImage);
+			this.load.audio(i+'Sound',arr2.bgMusic);
+			if(arr2.type == 'level'){
+				this.load.spritesheet(i+'Dragon',arr2.dragonImage,parseInt(arr2.dragonSpriteWidth),parseInt(arr2.dragonSpriteHeight));
+				this.load.spritesheet(i+'DragonPower',arr2.dragonPower,parseInt(arr2.dragonPowerSpriteWidth),parseInt(arr2.dragonPowerSpriteHeight));
+				console.log(i);
+			}
+		}
 
 		this.load.image('heart',preloadData.heart);
 

@@ -10,12 +10,12 @@ Game.PreLevel1.prototype = {
 
 		currentLevel = 'prelevel';
 
-		levelData = levelDimensions.prelevel; 
+		levelData = levelDimensions[currentLevel];
 
 		createLevelStructure(game,levelData);
-		createEnemy(game,'prelevel');
+		createEnemy(game,levelData);
 		createPlayer(80,210);
-		createCoin(game,'preLevel');
+		createCoin(game,levelData);
 		initialiseComponentVariables();
 		createNuts(game,10);
 		createBar(game);
@@ -25,7 +25,7 @@ Game.PreLevel1.prototype = {
 
 		controls = this.input.keyboard.createCursorKeys();
 
-		tunnel = game.add.sprite(levelData.width - 30,this.game.height - 44,'tunnel');
+		tunnel = game.add.sprite(this.world.width - 30,this.game.height - 44,'tunnel');
 		enableCollisionNotGravity(game,tunnel);
 		// tunnel.body.setSize(80,5,0,3);
 		tunnel.next = 'Scene';
@@ -57,8 +57,10 @@ Game.PreLevel1.prototype = {
 	// render: function(game){
 	// 	game.debug.body(hoardingDragon);
 	// 	game.debug.body(player);
-	// 	box.forEach(function(snap){
-	// 		game.debug.body(snap);
-	// 	});
+	// 	if(player.x >= hoardingStartX && flagHoardingFire == true){
+	// 		hoardingDragonFire.forEach(function(snap){
+	// 			game.debug.body(snap);
+	// 		});
+	// 	}
 	// }
 }

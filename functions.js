@@ -63,7 +63,7 @@ var flag = 0;
 var soundPowerUp,soundJump,enemyDie;
 var soundCoin,soundDie,soundNew;
 var base;
-var levelData;
+var levelData,sceneData;
 var platform;
 var flagEnemy = {};
 var flagDie = false;
@@ -99,23 +99,23 @@ var mainDragon,flagShootFire,flagCloudFire;
 // creates basic level structure i.e. ground and platforms and manages bgImage and size of game
 
 function createLevelStructure(game,levelData){
-	if(levelData.width % 16 != 0)
+	if(levelData.totalWidth % 16 != 0)
 		{
-			levelData.width = (levelData.width / 16 + 1) * 16;
+			levelData.totalWidth = (levelData.totalWidth / 16 + 1) * 16;
 		}
-		if(levelData.height % 16 != 0)
+		if(levelData.totalHeight % 16 != 0)
 		{
-			levelData.height = (Math.floor(levelData.height / 16) + 1) * 16;
+			levelData.totalHeight = (Math.floor(levelData.totalHeight / 16) + 1) * 16;
 		}
-		game.scale.setGameSize(500, levelData.height);
-		thisLevel.world.setBounds(0,0,parseInt(levelData.width),parseInt(levelData.height));
+		game.scale.setGameSize(levelData.viewWidth, levelData.viewHeight);
+		thisLevel.world.setBounds(0,0,parseInt(levelData.totalWidth),parseInt(levelData.totalHeight));
 		
 	indexB = 0;
 		bg.width = 0;
-		widthLeft = levelData.width;
+		widthLeft = levelData.totalWidth;
 		bgImage = game.add.group();
 		while(widthLeft > 0 ){
-			bg = bgImage.create(bg.width*indexB,0,'bg');
+			bg = bgImage.create(bg.width*indexB,0,levelData.id+'bg');
 			bg.width = thisLevel.game.height * bg.width / bg.height;
 			bg.height = thisLevel.game.height;
 			widthLeft -= bg.width;
@@ -124,16 +124,16 @@ function createLevelStructure(game,levelData){
 
 		ground = game.add.group();
 
-		for(var i =0;i<parseInt(levelData.width) / 16;i++)
+		for(var i =0;i<parseInt(levelData.totalWidth) / 16;i++)
 		{
 			base = createGroupSprite(game, ground, base, 'block', 8 + 16 * i, 8);
-			base = createGroupSprite(game, ground, base, 'block', 8 + 16 * i, parseInt(levelData.height) - 8);
+			base = createGroupSprite(game, ground, base, 'block', 8 + 16 * i, parseInt(levelData.totalHeight) - 8);
 		}
 		
-		for(var i =0;i<parseInt(levelData.height) / 16;i++)
+		for(var i =0;i<parseInt(levelData.totalHeight) / 16;i++)
 		{
 			base = createGroupSprite(game, ground, base, 'block', 8, 8 + 16 * i);
-			base = createGroupSprite(game, ground, base, 'block',parseInt(levelData.width) - 8, 8 + 16 * i);
+			base = createGroupSprite(game, ground, base, 'block',parseInt(levelData.totalWidth) - 8, 8 + 16 * i);
 		}
 
 		platforms = game.add.group();
@@ -159,7 +159,7 @@ function createLevelStructure(game,levelData){
 
 // create enemy of all 3 groups
 
-function createEnemy(game,level){
+function createEnemy(game,levelData){
 	enemyOneGroup = game.add.group();
 		thisLevel.physics.arcade.enableBody(enemyOneGroup);
 
@@ -177,9 +177,9 @@ function createEnemy(game,level){
 		dragon = game.add.group();
 		thisLevel.physics.arcade.enableBody(dragon);
 
-	    for(var i=0;i<enemyData[level].length;i++)
+	    for(var i=0;i<levelData.enemy.length;i++)
 	    {
-	    	var arr = enemyData[level][i];
+	    	var arr = levelData.enemy[i];
 	    	if(arr.type == "bird")
 	    	{
 				var enemy = EnemyBird(game,enemyBirdGroup,enemy,'bird',parseInt(arr.x), parseInt(arr.y),i.toString());
@@ -216,9 +216,9 @@ function createCoin(game,level){
 	coins = game.add.group();
 	    thisLevel.physics.arcade.enableBody(coins);
 
-	    for(i=0;i<coinData[level].length;i++)
+	    for(i=0;i<levelData.coin.length;i++)
 	    {
-	    	var coin = coins.create(parseInt(coinData[level][i].x),parseInt(coinData[level][i].y),'coin');
+	    	var coin = coins.create(parseInt(levelData.coin[i].x),parseInt(levelData.coin[i].y),'coin');
 		    coin.anchor.setTo(0.5);
 		    thisLevel.physics.arcade.enable(coin);
 		    coin.body.allowGravity = false;
@@ -249,7 +249,7 @@ function createPlayer(x,y){
 // creates required sounds
 
 function createSounds(game){
-	bgMusic = game.add.sound('backgroundMusic',0.7,true);
+	bgMusic = game.add.sound(levelData.id+'Sound',0.7,true);
 	soundJump = game.add.sound('jump');
 	soundPowerUp = game.add.sound('powerup');
 	soundCoin = game.add.sound('soundCoin');
@@ -551,9 +551,10 @@ function collideNuts(enemy,nut){
 	nut.destroy();
 	enemy.damage(15);
 	dragonHealth -= 15;
-	var tween = getGame.add.tween(enemy).to({
-		tint: 0xff0000
-	},500,'Linear',true,0,1,true);
+	// tint throws cross origin error when importing dragon image from firebase
+	// var tween = getGame.add.tween(enemy).to({
+	// 	tint: 0xff0000
+	// },500,'Linear',true,0,1,true);
 	dragon.setAll('health', dragonHealth);
 	enemy.graphicsDragon.graphicsData[1].shape.width = dragonHealth/2;
 }
@@ -618,8 +619,8 @@ function changeDirection(enemy,block){
 		if(flagEnemyDirection[enemy.name] == 0)
 		{
 			flagEnemyDirection[enemy.name] = 1;
-			enemy.body.velocity.x = -1 * (enemyData[currentLevel][parseInt(enemy.name)].velocity);
-			enemyData[currentLevel][parseInt(enemy.name)].velocity = -1 * (enemyData[currentLevel][parseInt(enemy.name)].velocity);
+			enemy.body.velocity.x = -1 * (levelData.enemy[parseInt(enemy.name)].velocity);
+			levelData.enemy[parseInt(enemy.name)].velocity = -1 * (levelData.enemy[parseInt(enemy.name)].velocity);
 			changeTime[enemy.name] = thisLevel.time.now + 100;
 		}
 	}
@@ -1006,7 +1007,7 @@ function shootFire(d,fire){
 				nut.reset(d.x - d.width/4,d.y - d.height*1/8);
 				nut.body.allowGravity = false;
 				nut.width = nut.height = 48;
-				// nut.body.setSize(28,28,10,10);
+				// nut.anchor.setTo(0.5);
 				if(player.x > d.x)
 				{
 					nut.body.velocity.x = 200;
@@ -1018,6 +1019,7 @@ function shootFire(d,fire){
 					d.scale.setTo(1,1);
 					nut.angle = 3*Math.atan(1) * 180 / Math.PI;
 				}
+				// nut.body.setSize(28,28,10,10);
 				nut.body.velocity.y = 200;
 				nut.play('fire');
 				shootFireTime = thisLevel.time.now + 900;
@@ -1028,7 +1030,7 @@ function shootFire(d,fire){
 // creates dragon for stage end.
 
 function createMainDragon(noOfPower){
-	mainDragon = createEnemyDragon(mainDragon,thisLevel.world.width - 150,'dragon',dragon);
+	mainDragon = createEnemyDragon(mainDragon,thisLevel.world.width - 150,levelData.id+'Dragon',dragon);
 		mainDragon.name = 'mainDragon';
 		mainDragon.health = dragonHealth;
 		mainDragon.graphicsDragon.graphicsData[1].shape.width = dragonHealth/2;
@@ -1036,7 +1038,7 @@ function createMainDragon(noOfPower){
 		fire.enableBody = true;
 		fire.physicsBodyType = Phaser.Physics.ARCADE;
 
-		fire = createEnemyFire(fire,'fire',noOfPower);
+		fire = createEnemyFire(fire,levelData.id+'DragonPower',noOfPower);
 
 		flagShootFire = true;
 }
@@ -1068,13 +1070,13 @@ function createEnemyDragon(d,x,key,group){
 function createDragon(x,type){
 	if(type == 'cloud')
 	{
-		cloudDragon = createEnemyDragon(cloudDragon,x,'dragon',dragon);
+		cloudDragon = createEnemyDragon(cloudDragon,x,levelData.id+'Dragon',dragon);
 		cloudDragon.name = type;
 		cloudDragon.health = dragonHealth;
 		cloudDragon.graphicsDragon.graphicsData[1].shape.width = dragonHealth/2;
 	}
 	else {
-		hoardingDragon = createEnemyDragon(hoardingDragon,x,'dragon',dragon);
+		hoardingDragon = createEnemyDragon(hoardingDragon,x,levelData.id+'Dragon',dragon);
 		hoardingDragon.name = type;
 		hoardingDragon.health = dragonHealth;
 		hoardingDragon.graphicsDragon.graphicsData[1].shape.width = dragonHealth/2;
@@ -1149,7 +1151,7 @@ function componentHoarding(game,i){
     hoardingDragonFire = getGame.add.group();
     hoardingDragonFire.enableBody = true;
 	hoardingDragonFire.physicsBodyType = Phaser.Physics.ARCADE;
-    createEnemyFire(hoardingDragonFire,'fire',100);
+    createEnemyFire(hoardingDragonFire,levelData.id+'DragonPower',100);
 
     flagHoardingFire = true;
 
@@ -1275,7 +1277,7 @@ function componentFallingWords(game,i){
 	cloudDragonFire = getGame.add.group();
 	cloudDragonFire.enableBody = true;
 	cloudDragonFire.physicsBodyType = Phaser.Physics.ARCADE;
-    createEnemyFire(cloudDragonFire,'fire',50);
+    createEnemyFire(cloudDragonFire,levelData.id+'DragonPower',50);
     flagCloudFire = true;
 
 	indexCloud++;
@@ -1303,9 +1305,9 @@ function createBasicModal(game){
 
     modalOpenTime = thisLevel.time.now;
 
-	for (var i=0;i<levelData.length;i++)
+	for (var i=0;i<sceneData.length;i++)
 	{
-		var arr = levelData[i].modalData;
+		var arr = sceneData[i].modalData;
 		console.log(i);
 		createModal(getGame,arr);
 	}
@@ -1315,9 +1317,9 @@ function createBasicModal(game){
 	button = game.add.group();
 	thisLevel.physics.arcade.enableBody(button);
 
-	for(i=0;i<levelData.length;i++)
+	for(i=0;i<sceneData.length;i++)
 	{
-		var arr = levelData[i];
+		var arr = sceneData[i];
 		// if(arr.isSpriteSheet == false)
 		// {
 		// 	var shadow = game.add.sprite(parseInt(arr.buttonX)+5,parseInt(arr.buttonY)+5, arr.buttonKey);
@@ -1370,6 +1372,8 @@ function updateScenePhysics(){
     	openedModal = false;
     }
 }
+
+// creates individual modal for each obtion by taking input modalData
 
 function createModal(game,options) {
     var type = options.type || ''; // must be unique
@@ -1517,6 +1521,8 @@ function createModal(game,options) {
     modalGroup.visible = false;
     game.modals[type] = modalGroup;
 }
+
+// hides the modal on space clicked
 
 function hideModal(type) {
     getGame.modals[type].visible = false;

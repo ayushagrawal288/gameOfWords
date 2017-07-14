@@ -9,9 +9,22 @@ database.child("Data").on("value", function(snapshot) {
 	_getEvent()
 });
 
+// var levelDimensions = [];
+// database.child("Config").on("value", function(snapshot) {
+//   	levelDimensions = snapshot.val();
+// 	flag++;
+// 	_getEvent()
+// });
+
 var levelDimensions = [];
-database.child("Config").on("value", function(snapshot) {
-  	levelDimensions = snapshot.val();
+database.child("Level").on("value", function(snapshot) {
+  	for(var k in snapshot.val())
+	{
+		// console.log(snapshot.val()[k].id,snapshot.val()[k]);
+		levelDimensions[snapshot.val()[k].id] = snapshot.val()[k];
+		// console.log(levelData);
+	}
+	console.log(levelDimensions);
 	flag++;
 	_getEvent()
 });
@@ -23,19 +36,19 @@ database.child("Color").on("value", function(snapshot) {
 	_getEvent()
 });
 
-var coinData = [];
-database.child("Coin").on("value", function(snapshot) {
-  	coinData = snapshot.val();
-	flag++;
-	_getEvent()
-});
+// var coinData = [];
+// database.child("Coin").on("value", function(snapshot) {
+//   	coinData = snapshot.val();
+// 	flag++;
+// 	_getEvent()
+// });
 
-var enemyData = [];
-database.child("Enemy").on("value", function(snapshot) {
-  	enemyData = snapshot.val();
-	flag++;
-	_getEvent()
-});
+// var enemyData = [];
+// database.child("Enemy").on("value", function(snapshot) {
+//   	enemyData = snapshot.val();
+// 	flag++;
+// 	_getEvent()
+// });
 
 var wordsToFall = [];
 database.child("Words").on("value", function(snapshot) {
@@ -97,7 +110,7 @@ database.child("Mines").on("value", function(snapshot) {
 });
 
 function _getEvent() {
-	if(flag == 10){
+	if(flag == 9){
 	var game = new Phaser.Game(Game.Params.baseWidth,Game.Params.baseHeight,Phaser.CANVAS,'');
 			game.state.add('Boot',Game.Boot);
 			game.state.add('Preloader',Game.Preloader);
