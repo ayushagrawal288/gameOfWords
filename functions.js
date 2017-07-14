@@ -676,13 +676,6 @@ function EnemyBird(game,group,sprite,key,x,y,name){
 		return sprite;
 };
 
-// // en
-
-// function enemyTweenDie(enemy,enemyTween){
-// 		// console.log(enemy,enemyTween);	
-// 		enemy.destroy();
-// };
-
 // enter tunnnel & changes level to next
 
 function enterTunnel(player,tunnel){

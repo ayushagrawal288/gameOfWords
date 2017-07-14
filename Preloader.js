@@ -28,16 +28,10 @@ Game.Preloader.prototype = {
 		this.load.spritesheet('enemy1',preloadData.enemyType1,preloadData.enemy1SpriteWidth,preloadData.enemy1SpriteHeight);
 		this.load.spritesheet('enemy2',preloadData.enemyType2,preloadData.enemy2SpriteWidth,preloadData.enemy2SpriteHeight);
 		this.load.spritesheet('power',preloadData.playerPower,preloadData.playerPowerSpriteWidth,preloadData.playerPowerSpriteHeight);
-
-		this.load.image('playNow','assets/play.png');
-
-		this.load.spritesheet('dragon','assets/dragon1.png',256,256);
-		this.load.spritesheet('fire','assets/fire.png',512,512);
-
-		this.load.image('next','assets/next.png');
-
-		this.load.image('bg','assets/yo3.png');
-		this.load.image('night','assets/night.png');
+		this.load.image('playNow',preloadData.playNow);
+		this.load.image('next',preloadData.next);
+		this.load.image('mainMenuBG',preloadData.mainMenuBG);
+		this.load.audio('mainMenuSound',preloadData.mainMenuBGMusic);
 
 		for(var i in levelDimensions){
 			var arr2 = levelDimensions[i];
@@ -46,7 +40,6 @@ Game.Preloader.prototype = {
 			if(arr2.type == 'level'){
 				this.load.spritesheet(i+'Dragon',arr2.dragonImage,parseInt(arr2.dragonSpriteWidth),parseInt(arr2.dragonSpriteHeight));
 				this.load.spritesheet(i+'DragonPower',arr2.dragonPower,parseInt(arr2.dragonPowerSpriteWidth),parseInt(arr2.dragonPowerSpriteHeight));
-				console.log(i);
 			}
 		}
 
@@ -80,8 +73,6 @@ Game.Preloader.prototype = {
 			this.load.image(arr2.cloudKey,arr2.cloud);
 		}
 
-		this.load.image('scene1',preloadData.sceneBackground);
-		this.load.image('scene2',preloadData.scene2Background);
 		for(var k in sceneButtons){
 			var arr2 = sceneButtons[k];
 			for(var i in arr2)
