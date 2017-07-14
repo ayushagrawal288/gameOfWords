@@ -1170,7 +1170,7 @@ function componentMines(game,i){
 
     for(var j=0;j<4;j++)
     {
-	    handle = createGroupSprite(game,handles,handle,arr["handleKey"],questionbgImage.x + parseInt(arr["gap"])*j - 100,thisLevel.game.height - 44,optionRepresent[j.toString()]);
+	    handle = createGroupSprite(game,handles,handle,arr["handleKey"],questionbgImage.x + parseInt(arr["gap"])*j - 100,thisLevel.game.height - 38,optionRepresent[j.toString()]);
 	    handle.body.setSize(24,32.4,0);
 	    handle.scale.setTo(0.6);
 	    flagHandle[optionRepresent[j.toString()]] = 0;
@@ -1194,7 +1194,7 @@ function componentMines(game,i){
 
    	for( var j=0;j<4;j++)
    	{
-	    dynamiteBox = createGroupSprite(game,dynamiteBoxes,dynamiteBox,arr["dynamiteBoxKey"],questionbgImage.x + parseInt(arr["gap"])*j - 100,thisLevel.game.height - 28,optionRepresent[j.toString()]);
+	    dynamiteBox = createGroupSprite(game,dynamiteBoxes,dynamiteBox,arr["dynamiteBoxKey"],questionbgImage.x + parseInt(arr["gap"])*j - 100,thisLevel.game.height - 22,optionRepresent[j.toString()]);
 	    textMines = addText(game,dynamiteBox.x + 2, dynamiteBox.y + 4 ,optionRepresent[j.toString()],styleMines,textGroupMines);
 	    dynamiteBox.scale.setTo(0.75);
    	}
@@ -1210,7 +1210,7 @@ function componentMines(game,i){
 	wall = game.add.group();
 	game.physics.arcade.enableBody(wall);
 
-    wall1 = createGroupSprite(game,wall,wall1,arr["wallKey"],questionbgImage.x + parseInt(arr["gap"])*4 -70,thisLevel.game.height - 70);
+    wall1 = createGroupSprite(game,wall,wall1,arr["wallKey"],questionbgImage.x + parseInt(arr["gap"])*4 -70,thisLevel.game.height - 62);
     wall1.scale.setTo(0.75,0.85);
     wall2 = createGroupSprite(game,wall,wall2,arr["wallKey"],wall1.x + 2*parseInt(arr["gap"]),wall1.y);
     wall2.scale.setTo(0.75,0.85);
